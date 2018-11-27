@@ -7,6 +7,7 @@ public class CongestionChargeSystem {
 
     public static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = new BigDecimal(0.05);
 
+    //an eventlog that records all boundary crossing events
     private final List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
 
     public void vehicleEnteringZone(Vehicle vehicle) {
@@ -20,17 +21,26 @@ public class CongestionChargeSystem {
         eventLog.add(new ExitEvent(vehicle));
     }
 
+    //Calculates charges at the end of the day
     public void calculateCharges() {
 
+        //A Map to map crossing events to each vehicle
         Map<Vehicle, List<ZoneBoundaryCrossing>> crossingsByVehicle = new HashMap<Vehicle, List<ZoneBoundaryCrossing>>();
 
+        //iterate through boundary crossing events
         for (ZoneBoundaryCrossing crossing : eventLog) {
+
+            //check if a vehicle has not already been added to the map
             if (!crossingsByVehicle.containsKey(crossing.getVehicle())) {
+                //if not added then create its entry with empty boundary crossing event list
                 crossingsByVehicle.put(crossing.getVehicle(), new ArrayList<ZoneBoundaryCrossing>());
             }
+            //add this boundary crossing event to this vehicle
             crossingsByVehicle.get(crossing.getVehicle()).add(crossing);
         }
 
+
+        //Entry that includes a vehicle and all its boundary crossing events (lists)
         for (Map.Entry<Vehicle, List<ZoneBoundaryCrossing>> vehicleCrossings : crossingsByVehicle.entrySet()) {
             Vehicle vehicle = vehicleCrossings.getKey();
             List<ZoneBoundaryCrossing> crossings = vehicleCrossings.getValue();
@@ -58,6 +68,8 @@ public class CongestionChargeSystem {
 
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
+
+        //Adds the fees applied to  each period of stay together
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
 
             if (crossing instanceof ExitEvent) {
@@ -72,6 +84,7 @@ public class CongestionChargeSystem {
         return charge;
     }
 
+    //checks if the vehicle ever passed through the boundary
     private boolean previouslyRegistered(Vehicle vehicle) {
         for (ZoneBoundaryCrossing crossing : eventLog) {
             if (crossing.getVehicle().equals(vehicle)) {
@@ -83,9 +96,12 @@ public class CongestionChargeSystem {
 
     private boolean checkOrderingOf(List<ZoneBoundaryCrossing> crossings) {
 
+        //lastevent for the earlier event, croosing for the later event, compare the two and iterate through the list
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
+        //sublist excludes checked event
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
+            //Below are abnormal events that triggers investigation
             if (crossing.timestamp() < lastEvent.timestamp()) {
                 return false;
             }
