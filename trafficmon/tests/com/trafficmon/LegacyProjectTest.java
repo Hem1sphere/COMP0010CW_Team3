@@ -20,29 +20,24 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class LegacyProjectTest {
 
-    @Mock
-    Vehicle mockedVehicle;
-    ArrayList<ZoneBoundaryCrossing> mockedEventLog;
-
-    @Before
-    public void initMocks(){
-        MockitoAnnotations.initMocks(this);
-    }
-
-
     @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+
+    @Mock Vehicle mockedVehicle;
+
+    final EntryEvent VEHICLE_ENTRY = new EntryEvent(mockedVehicle);
+
+    @Mock ArrayList<ZoneBoundaryCrossing> mockedEventLog;
 
     @Test
     public void registeredVehicleCrossingBoundaryLoggedIntoChargeSystem(){
         congestionChargeSystem.vehicleEnteringZone(mockedVehicle);
         //eventlog should add a new EntryEvent(mockedVehicle)
-        Mockito.verify(mockedEventLog, Mockito.times(1)).add(new EntryEvent(mockedVehicle));
+        Mockito.verify(mockedEventLog, Mockito.times(1)).add(VEHICLE_ENTRY);
     }
 
     @Test
