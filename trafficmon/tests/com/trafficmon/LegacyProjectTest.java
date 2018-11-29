@@ -1,43 +1,34 @@
 package com.trafficmon;
 
-import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.Mockito.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.junit.Assert.*;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LegacyProjectTest {
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
-    CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
 
-    @Mock Vehicle mockedVehicle;
+    //@Mock private ArrayList<ZoneBoundaryCrossing> mockedEventLog;
 
-    final EntryEvent VEHICLE_ENTRY = new EntryEvent(mockedVehicle);
+    //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
 
-    @Mock ArrayList<ZoneBoundaryCrossing> mockedEventLog;
 
     @Test
     public void registeredVehicleCrossingBoundaryLoggedIntoChargeSystem(){
-        congestionChargeSystem.vehicleEnteringZone(mockedVehicle);
-        //eventlog should add a new EntryEvent(mockedVehicle)
-        Mockito.verify(mockedEventLog, Mockito.times(1)).add(VEHICLE_ENTRY);
+        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        assertEquals(testVehicle,congestionChargeSystem.getCurrentEventLog().get(0).getVehicle());
     }
 
     @Test

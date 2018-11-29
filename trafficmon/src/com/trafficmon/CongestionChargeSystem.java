@@ -121,4 +121,11 @@ public class CongestionChargeSystem {
         return (int) Math.ceil((endTimeMs - startTimeMs) / (1000.0 * 60.0));
     }
 
+
+
+    //Below is getter methods for testing
+    public List<ZoneBoundaryCrossing> getCurrentEventLog(){
+        return eventLog;
+    }
+
 }
