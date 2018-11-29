@@ -33,29 +33,32 @@ public class LegacyProjectTest {
 
     @Test
     public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
-
+        //Needs to work on Timestamp
     }
 
+
+    //For the next two tests, how do I know if
     @Test
     public void doubleEntryEventTriggersInvestigation(){
-
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        assertFalse(congestionChargeSystem.pubCheckOrdering());
     }
 
     @Test
     public void doubleExitEventTriggersInvestigation(){
-
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        assertFalse(congestionChargeSystem.pubCheckOrdering());
     }
 
-    @Test
-    public void accountNotRegisteredReceivesPenalty(){
 
-    }
-
-    @Test
-    public void accountInsufficientBalanceReceivesPenalty(){
-
-    }
-
+    //below also requires doing stuff with timestamp
     @Test
     public void onceInOnceOutVehicleReceivesInvoice(){
 
