@@ -19,7 +19,7 @@ public class PowerLegacyTest{
         @Test
         public void doubleEntryEventTriggersInvestigation() throws Exception{
                 PowerMockito.mockStatic(OperationsTeam.class);
-                PenaltiesService mockedOpsTeam = Mockito.mock(OperationsTeam.class);
+                OperationsTeam mockedOpsTeam = Mockito.mock(OperationsTeam.class);
                 //mockedOpsTeam is a mocked instance of OperationsTeam class
                 Mockito.when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
                 //When congestion charge system calls for a new OperationTeam, return the mocked instance to them

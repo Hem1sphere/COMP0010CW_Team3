@@ -42,13 +42,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="4458" />
+          <entry key="java" value="4459" />
           <entry key="xml" value="356" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="4458" />
+          <entry key="JAVA" value="4459" />
           <entry key="XML" value="356" />
         </counts>
       </usages-collector>
@@ -118,7 +118,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trafficmon/tests/com/trafficmon/LegacyProjectTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
+            <state relative-caret-position="-337">
               <caret line="16" selection-start-line="16" selection-end-line="16" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -130,8 +130,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trafficmon/tests/com/trafficmon/PowerLegacyTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="295">
-              <caret line="23" column="40" selection-start-line="23" selection-start-column="40" selection-end-line="23" selection-end-column="40" />
+            <state relative-caret-position="195">
+              <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -285,7 +285,7 @@
     <property name="SearchEverywhereHistoryKey" value="project explorer&#9;null&#9;null" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543682505729" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543683286056" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/trafficmon/tests" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -312,7 +312,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.LegacyProjectTest">
+  <component name="RunManager" selected="JUnit.PowerLegacyTest">
     <configuration name="LegacyProjectTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="COMP0010CW_Team3" />
       <extension name="coverage">
@@ -398,8 +398,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.LegacyProjectTest" />
         <item itemvalue="JUnit.PowerLegacyTest" />
+        <item itemvalue="JUnit.LegacyProjectTest" />
         <item itemvalue="JUnit.LegacyProjectTest.doubleExitEventTriggersInvestigation" />
         <item itemvalue="JUnit.LegacyProjectTest.doubleEntryEventTriggersInvestigation" />
         <item itemvalue="JUnit.LegacyProjectTest.registeredVehicleCrossingBoundaryLoggedIntoChargeSystem" />
@@ -427,12 +427,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="PowerLegacyTest - 2018.12.01 at 16h 16m 18s.xml">
-      <configuration name="PowerLegacyTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="PowerLegacyTest - 2018.12.01 at 16h 17m 00s.xml">
-      <configuration name="PowerLegacyTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="PowerLegacyTest - 2018.12.01 at 16h 17m 34s.xml">
       <configuration name="PowerLegacyTest" configurationId="JUnit" />
     </history-entry>
@@ -457,9 +451,15 @@
     <history-entry file="PowerLegacyTest - 2018.12.01 at 16h 40m 07s.xml">
       <configuration name="PowerLegacyTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="PowerLegacyTest - 2018.12.01 at 16h 41m 40s.xml">
+      <configuration name="PowerLegacyTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="LegacyProjectTest - 2018.12.01 at 16h 41m 47s.xml">
+      <configuration name="LegacyProjectTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36976000" />
+    <option name="totallyTimeSpent" value="37164000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -604,16 +604,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trafficmon/tests/com/trafficmon/LegacyProjectTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/trafficmon/lib/trafficmon-externals.jar!/com/trafficmon/OperationsTeam.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
@@ -621,10 +611,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/trafficmon/tests/com/trafficmon/LegacyProjectTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-337">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/trafficmon/tests/com/trafficmon/PowerLegacyTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="23" column="40" selection-start-line="23" selection-start-column="40" selection-end-line="23" selection-end-column="40" />
+        <state relative-caret-position="195">
+          <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
