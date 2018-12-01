@@ -12,15 +12,21 @@ import static org.junit.Assert.assertFalse;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OperationsTeam.class)
+
 public class PowerLegacyTest{
+
         @Test
         public void doubleEntryEventTriggersInvestigation() throws Exception{
-                PenaltiesService mockedOpsTeam = OperationsTeam.getInstance();
-                PowerMockito.when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
+                PowerMockito.mockStatic(OperationsTeam.class);
+                PenaltiesService mockedOpsTeam = Mockito.mock(OperationsTeam.class);
+                //mockedOpsTeam is a mocked instance of OperationsTeam class
+                Mockito.when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
+                //When congestion charge system calls for a new OperationTeam, return the mocked instance to them
                 CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
                 Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
                 congestionChargeSystem.vehicleEnteringZone(testVehicle);
                 congestionChargeSystem.vehicleEnteringZone(testVehicle);
+//                assertFalse(congestionChargeSystem.pubCheckOrdering());
                 Mockito.verify(mockedOpsTeam, Mockito.times(1)).triggerInvestigationInto(testVehicle);
         }
         }
