@@ -128,8 +128,4 @@ public class CongestionChargeSystem {
         return eventLog;
     }
 
-    public boolean pubCheckOrdering(){
-        return checkOrderingOf(eventLog);
-    }
-
 }

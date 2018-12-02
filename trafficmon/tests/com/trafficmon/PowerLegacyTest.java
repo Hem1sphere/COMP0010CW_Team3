@@ -28,7 +28,20 @@ public class PowerLegacyTest{
                 congestionChargeSystem.vehicleEnteringZone(testVehicle);
                 congestionChargeSystem.vehicleEnteringZone(testVehicle);
                 congestionChargeSystem.calculateCharges();
-//                assertFalse(congestionChargeSystem.pubCheckOrdering());
+                Mockito.verify(mockedOpsTeam, Mockito.times(1)).triggerInvestigationInto(testVehicle);
+        }
+
+        @Test
+        public void doubleExitEventTriggersInvestigation() throws Exception{
+                PowerMockito.mockStatic(OperationsTeam.class);
+                OperationsTeam mockedOpsTeam = Mockito.mock(OperationsTeam.class);
+                Mockito.when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
+                CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+                Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
+                congestionChargeSystem.vehicleEnteringZone(testVehicle);
+                congestionChargeSystem.vehicleLeavingZone(testVehicle);
+                congestionChargeSystem.vehicleLeavingZone(testVehicle);
+                congestionChargeSystem.calculateCharges();
                 Mockito.verify(mockedOpsTeam, Mockito.times(1)).triggerInvestigationInto(testVehicle);
         }
         }
