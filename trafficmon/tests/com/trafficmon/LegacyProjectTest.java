@@ -60,13 +60,23 @@ public class LegacyProjectTest {
     }
 
     @Test
-    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
+    public void vehicleLeavingZoneLoggedIntoChargeSystem(){
+        //previouslyRegisteredLeaving
         Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         assertEquals(ExitEvent.class, congestionChargeSystem.getCurrentEventLog().get(1).getClass());
         assertEquals(testVehicle,congestionChargeSystem.getCurrentEventLog().get(1).getVehicle());
+        //notRegisteredLeaving
+        Vehicle testVehicle2 = Vehicle.withRegistration("NOTEXIST");
+        congestionChargeSystem.vehicleLeavingZone(testVehicle2);
+        assertEquals(2, congestionChargeSystem.getCurrentEventLog().size());
+    }
+
+    @Test
+    public void mapOfSystemCorrectlyMapsVehiclesAndTheirCrossings(){
+
     }
 
 

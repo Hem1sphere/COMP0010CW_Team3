@@ -123,7 +123,7 @@ public class CongestionChargeSystem {
 
 
 
-    //Below is getter methods for testing
+    //Below are getter methods for testing
     public List<ZoneBoundaryCrossing> getCurrentEventLog(){
         return eventLog;
     }
