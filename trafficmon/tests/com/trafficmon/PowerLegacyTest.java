@@ -52,18 +52,18 @@ public class PowerLegacyTest{
         mockStatic(OperationsTeam.class);
 
         OperationsTeam mockedOpsTeam = Mockito.mock(OperationsTeam.class);
-        RegisteredCustomerAccountsService as = Mockito.mock(RegisteredCustomerAccountsService.class);
-        Account acc = Mockito.mock(Account.class);
+        RegisteredCustomerAccountsService mockRegCustAccService = Mockito.mock(RegisteredCustomerAccountsService.class);
+        Account mockAccount = Mockito.mock(Account.class);
 
-        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(as);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(mockRegCustAccService);
         when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
 
         CongestionChargeSystem cgs = new CongestionChargeSystem();
 
         Vehicle v1 = Vehicle.withRegistration("SKS7845B");
-        when(as.accountFor(any(Vehicle.class))).thenReturn(acc);
+        when(mockRegCustAccService.accountFor(any(Vehicle.class))).thenReturn(mockAccount);
         BigDecimal charge = BigDecimal.valueOf(123);
-        doThrow(new InsufficientCreditException(charge)).when(acc).deduct(charge);
+        doThrow(new InsufficientCreditException(charge)).when(mockAccount).deduct(charge);
         cgs.vehicleEnteringZone(v1);
         cgs.vehicleLeavingZone(v1);
         cgs.calculateCharges();
