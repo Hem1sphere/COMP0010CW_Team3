@@ -60,14 +60,16 @@ public class PowerLegacyTest{
 
         CongestionChargeSystem cgs = new CongestionChargeSystem();
 
-        Vehicle v1 = Vehicle.withRegistration("SKS7845B");
+        Vehicle v1 = Vehicle.withRegistration("SCG1228G");
         when(mockRegCustAccService.accountFor(any(Vehicle.class))).thenReturn(mockAccount);
-        BigDecimal charge = BigDecimal.valueOf(123);
-        doThrow(new InsufficientCreditException(charge)).when(mockAccount).deduct(charge);
+
+        doThrow(InsufficientCreditException.class).when(mockAccount).deduct(any(BigDecimal.class));
+
         cgs.vehicleEnteringZone(v1);
         cgs.vehicleLeavingZone(v1);
         cgs.calculateCharges();
-//        verify(mockedOpsTeam).issuePenaltyNotice(any(Vehicle.class), any(BigDecimal.class));
+
+        verify(mockedOpsTeam).issuePenaltyNotice(eq(v1), any(BigDecimal.class));
 
     }
 }
