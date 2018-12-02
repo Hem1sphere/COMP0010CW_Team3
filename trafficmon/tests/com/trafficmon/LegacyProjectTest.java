@@ -25,13 +25,50 @@ public class LegacyProjectTest {
     //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
 
 
+
+//    The two tests below are not working, because the EntryEvent and ExitEvent I set up has different timesignature from
+//    What the system will return.
+
+//    @Test
+//    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
+//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+//        EntryEvent entryEvent = new EntryEvent(testVehicle);
+//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+//        assertEquals(entryEvent,congestionChargeSystem.getCurrentEventLog().get(0));
+//    }
+//
+//    @Test
+//    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
+//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+//        ExitEvent exitEvent = new ExitEvent(testVehicle);
+//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+//        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+//        assertEquals(exitEvent,congestionChargeSystem.getCurrentEventLog().get(1));
+//    }
+
+//    A workaround is to test if they are indeed EntryEvents / ExitEvents, and the vehicle recorded is correct
+
     @Test
-    public void registeredVehicleCrossingBoundaryLoggedIntoChargeSystem(){
+    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
         Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        assertEquals(EntryEvent.class, congestionChargeSystem.getCurrentEventLog().get(0).getClass());
         assertEquals(testVehicle,congestionChargeSystem.getCurrentEventLog().get(0).getVehicle());
     }
+
+    @Test
+    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
+        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        assertEquals(ExitEvent.class, congestionChargeSystem.getCurrentEventLog().get(1).getClass());
+        assertEquals(testVehicle,congestionChargeSystem.getCurrentEventLog().get(1).getVehicle());
+    }
+
 
     @Test
     public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
