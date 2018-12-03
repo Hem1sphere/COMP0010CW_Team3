@@ -5,7 +5,8 @@ public class Example {
     public static void main(String[] args) throws Exception {
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
         congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("A123 XYZ"));
-        delaySeconds(5);
+        delaySeconds(10);
+        congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));
 //        congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("J091 4PY"));
 //        delayMinutes(30);
 //        congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));

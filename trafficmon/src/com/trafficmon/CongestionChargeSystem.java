@@ -7,17 +7,24 @@ public class CongestionChargeSystem {
 
     public static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = new BigDecimal(0.05);
 
-    //an eventlog that records all boundary crossing events
-    private final List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
+    //an event log that records all boundary crossing events
+    private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
     private final PenaltiesService operationsTeam;
 
+    //mutiple constructors are set up for testing purposes, could refactor to builder?
     public CongestionChargeSystem() {
         operationsTeam = OperationsTeam.getInstance();
+        eventLog = new ArrayList<ZoneBoundaryCrossing>();
     }
 
     public CongestionChargeSystem(PenaltiesService operationsTeam) {
         this.operationsTeam = operationsTeam;
+        eventLog = new ArrayList<ZoneBoundaryCrossing>();
+    }
 
+    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog) {
+        this.operationsTeam = operationsTeam;
+        this.eventLog = eventLog;
     }
 
     public void vehicleEnteringZone(Vehicle vehicle) {

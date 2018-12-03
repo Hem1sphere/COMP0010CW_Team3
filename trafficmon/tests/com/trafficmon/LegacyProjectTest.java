@@ -15,20 +15,24 @@ import org.mockito.junit.MockitoRule;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 //@RunWith(MockitoJUnitRunner.class)
 public class LegacyProjectTest {
-
     @Rule
 //    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     public JUnitRuleMockery context = new JUnitRuleMockery();
+
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+    private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
+
+
 
     //@Mock private ArrayList<ZoneBoundaryCrossing> mockedEventLog;
-
     @Test
     public void doubleEntryTriggersInvestigation() {
         context.checking(new Expectations(){{
@@ -48,38 +52,24 @@ public class LegacyProjectTest {
         }});
 
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam);
-        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleEnteringZone(testVehicle); //required if not vehicle will not even be logged initially
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.calculateCharges();
     }
-    //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
 
+    @Test
+    public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
+        //Needs to work on Timestamp
+        context.checking(new Expectations(){{
+            exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
+        }});
 
-
-//    The two tests below are not working, because the EntryEvent and ExitEvent I set up has different timesignature from
-//    What the system will return.
-
-//    @Test
-//    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
-//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-//        EntryEvent entryEvent = new EntryEvent(testVehicle);
-//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
-//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
-//        assertEquals(entryEvent,congestionChargeSystem.getCurrentEventLog().get(0));
-//    }
-//
-//    @Test
-//    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
-//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-//        ExitEvent exitEvent = new ExitEvent(testVehicle);
-//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
-//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
-//        congestionChargeSystem.vehicleLeavingZone(testVehicle);
-//        assertEquals(exitEvent,congestionChargeSystem.getCurrentEventLog().get(1));
-//    }
-
-//    A workaround is to test if they are indeed EntryEvents / ExitEvents, and the vehicle recorded is correct
+        testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
+        testEventLog.add(new ExitEvent(testVehicle, 1543807162400L));
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam, testEventLog);
+        congestionChargeSystem.calculateCharges();
+    }
 
     @Test
     public void vehicleEnteringZoneLoggedIntoChargeSystem(){
@@ -103,15 +93,38 @@ public class LegacyProjectTest {
         assertEquals(2, congestionChargeSystem.getCurrentEventLog().size());
     }
 
+    //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
+
+
+//    The two tests below are not working, because the EntryEvent and ExitEvent I set up has different timesignature from
+
+//    What the system will return.
+//    @Test
+//    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
+//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+//        EntryEvent entryEvent = new EntryEvent(testVehicle);
+//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+//        assertEquals(entryEvent,congestionChargeSystem.getCurrentEventLog().get(0));
+//    }
+//
+//    @Test
+//    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
+//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+//        ExitEvent exitEvent = new ExitEvent(testVehicle);
+//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+//        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+//        assertEquals(exitEvent,congestionChargeSystem.getCurrentEventLog().get(1));
+
+//    }
+
+//    A workaround is to test if they are indeed EntryEvents / ExitEvents, and the vehicle recorded is correct
+
+
     @Test
     public void mapOfSystemCorrectlyMapsVehiclesAndTheirCrossings(){
 
-    }
-
-
-    @Test
-    public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
-        //Needs to work on Timestamp
     }
 
 
