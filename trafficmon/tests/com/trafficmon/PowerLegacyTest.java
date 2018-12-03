@@ -7,6 +7,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,7 +71,7 @@ public class PowerLegacyTest{
         congestionChargeSystem.vehicleEnteringZone(v1);
         congestionChargeSystem.vehicleLeavingZone(v1);
         congestionChargeSystem.calculateCharges();
-        
+
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v1), any(BigDecimal.class));
 
 
@@ -86,7 +88,7 @@ public class PowerLegacyTest{
     }
 
     @Test
-    public void onceInOnceOutVehicleReceivesInvoice() throws Exception{
+    public void accountForSystemWorking() throws Exception{
         mockStatic(RegisteredCustomerAccountsService.class);
         Account mockedAccount = mock(Account.class);
         AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
@@ -99,6 +101,28 @@ public class PowerLegacyTest{
         congestionChargeSystem.calculateCharges();
 
         verify(registeredCustomerAccountsService).accountFor(vehicle01);
+    }
+
+    @Test
+    public void onceInOnceOutVehicleReceivesInvoice() throws Exception{
+
+        //How is fee calculated? What's the format?
+
+
+//        BigDecimal fee = new BigDecimal(1.5D);
+        mockStatic(RegisteredCustomerAccountsService.class);
+        AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
+        Vehicle vehicle01 = Vehicle.withRegistration("M4A1 CQB");
+        Account account = mock(Account.class);
+        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(account);
+        List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
+        eventLog.add(new EntryEvent(vehicle01, 15438071600L));
+        eventLog.add(new ExitEvent(vehicle01, 15438071630L));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(eventLog).build();
+        congestionChargeSystem.calculateCharges();
+//        verify(account).deduct(fee);
+        verify(account).deduct(any(BigDecimal.class));
     }
 
 }
