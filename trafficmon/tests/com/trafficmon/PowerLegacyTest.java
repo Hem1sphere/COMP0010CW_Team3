@@ -7,6 +7,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +64,7 @@ public class PowerLegacyTest{
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
 
         Vehicle v1 = Vehicle.withRegistration("SCG1228G");
-        when(registeredCustomerAccountsService.accountFor(any(Vehicle.class))).thenReturn(mockAccount1);
+        when(registeredCustomerAccountsService.accountFor(v1)).thenReturn(mockAccount1);
 
         doThrow(InsufficientCreditException.class).when(mockAccount1).deduct(any(BigDecimal.class));
 
@@ -84,4 +86,43 @@ public class PowerLegacyTest{
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v2), any(BigDecimal.class));
 
     }
+
+    @Test
+    public void accountForSystemWorking() throws Exception{
+        mockStatic(RegisteredCustomerAccountsService.class);
+        Account mockedAccount = mock(Account.class);
+        AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
+        Vehicle vehicle01 = Vehicle.withRegistration("VEHICLE01");
+        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(mockedAccount);
+        congestionChargeSystem.getCurrentEventLog().add(new EntryEvent(vehicle01));
+        congestionChargeSystem.getCurrentEventLog().add(new ExitEvent(vehicle01));
+        congestionChargeSystem.calculateCharges();
+
+        verify(registeredCustomerAccountsService).accountFor(vehicle01);
+    }
+
+    @Test
+    public void onceInOnceOutVehicleReceivesInvoice() throws Exception{
+
+        //How is fee calculated? What's the format?
+
+
+//        BigDecimal fee = new BigDecimal(1.5D);
+        mockStatic(RegisteredCustomerAccountsService.class);
+        AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
+        Vehicle vehicle01 = Vehicle.withRegistration("M4A1 CQB");
+        Account account = mock(Account.class);
+        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(account);
+        List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
+        eventLog.add(new EntryEvent(vehicle01, 15438071600L));
+        eventLog.add(new ExitEvent(vehicle01, 15438071630L));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(eventLog).build();
+        congestionChargeSystem.calculateCharges();
+//        verify(account).deduct(fee);
+        verify(account).deduct(any(BigDecimal.class));
+    }
+
 }
