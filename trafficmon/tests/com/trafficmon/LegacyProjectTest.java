@@ -2,28 +2,20 @@ package com.trafficmon;
 
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//@RunWith(MockitoJUnitRunner.class)
+
 public class LegacyProjectTest {
     @Rule
-//    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
@@ -32,8 +24,6 @@ public class LegacyProjectTest {
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
 
 
-
-    //@Mock private ArrayList<ZoneBoundaryCrossing> mockedEventLog;
     @Test
     public void doubleEntryTriggersInvestigation() {
         context.checking(new Expectations(){{
@@ -63,7 +53,7 @@ public class LegacyProjectTest {
     public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException {
         context.checking(new Expectations(){{
               //this exact invocation is expected when commented out, but returns NullPointerException when uncommented WHY
-//            exactly(1).of(accountsService).accountFor(testVehicle);
+            exactly(1).of(accountsService).accountFor(testVehicle);
         }});
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
@@ -107,35 +97,7 @@ public class LegacyProjectTest {
         assertEquals(2, congestionChargeSystem.getCurrentEventLog().size());
     }
 
-    //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
-
-
-//    The two tests below are not working, because the EntryEvent and ExitEvent I set up has different timesignature from
-
-//    What the system will return.
-//    @Test
-//    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
-//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-//        EntryEvent entryEvent = new EntryEvent(testVehicle);
-//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
-//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
-//        assertEquals(entryEvent,congestionChargeSystem.getCurrentEventLog().get(0));
-//    }
-//
-//    @Test
-//    public void previouslyRegisteredVehicleLeavingZoneLoggedIntoChargeSystem(){
-//        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-//        ExitEvent exitEvent = new ExitEvent(testVehicle);
-//        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
-//        congestionChargeSystem.vehicleEnteringZone(testVehicle);
-//        congestionChargeSystem.vehicleLeavingZone(testVehicle);
-//        assertEquals(exitEvent,congestionChargeSystem.getCurrentEventLog().get(1));
-
-//    }
-
-//    A workaround is to test if they are indeed EntryEvents / ExitEvents, and the vehicle recorded is correct
-
-
+    
     @Test
     public void mapOfSystemCorrectlyMapsVehiclesAndTheirCrossings(){
 

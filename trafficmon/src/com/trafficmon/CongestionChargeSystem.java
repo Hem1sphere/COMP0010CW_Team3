@@ -34,7 +34,6 @@ public class CongestionChargeSystem {
     public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsService accountsService) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
-        RegisteredCustomerAccountsService.getInstance();
         this.accountsService = accountsService;
     }
 
