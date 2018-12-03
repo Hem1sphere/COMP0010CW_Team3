@@ -9,6 +9,16 @@ public class CongestionChargeSystem {
 
     //an eventlog that records all boundary crossing events
     private final List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
+    private final PenaltiesService operationsTeam;
+
+    public CongestionChargeSystem() {
+        operationsTeam = OperationsTeam.getInstance();
+    }
+
+    public CongestionChargeSystem(PenaltiesService operationsTeam) {
+        this.operationsTeam = operationsTeam;
+
+    }
 
     public void vehicleEnteringZone(Vehicle vehicle) {
         eventLog.add(new EntryEvent(vehicle));
@@ -46,7 +56,7 @@ public class CongestionChargeSystem {
             List<ZoneBoundaryCrossing> crossings = vehicleCrossings.getValue();
 
             if (!checkOrderingOf(crossings)) {
-                OperationsTeam.getInstance().triggerInvestigationInto(vehicle);
+                operationsTeam.triggerInvestigationInto(vehicle);
             } else {
 
                 BigDecimal charge = calculateChargeForTimeInZone(crossings);
@@ -54,9 +64,9 @@ public class CongestionChargeSystem {
                 try {
                     RegisteredCustomerAccountsService.getInstance().accountFor(vehicle).deduct(charge);
                 } catch (InsufficientCreditException ice) {
-                    OperationsTeam.getInstance().issuePenaltyNotice(vehicle, charge);
+                    operationsTeam.issuePenaltyNotice(vehicle, charge);
                 } catch (AccountNotRegisteredException e) {
-                    OperationsTeam.getInstance().issuePenaltyNotice(vehicle, charge);
+                    operationsTeam.issuePenaltyNotice(vehicle, charge);
                 }
             }
         }
