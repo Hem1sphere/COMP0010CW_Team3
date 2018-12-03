@@ -25,13 +25,12 @@ public class LegacyProjectTest {
 
     public JUnitRuleMockery context = new JUnitRuleMockery();
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
+    private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
 
     //@Mock private ArrayList<ZoneBoundaryCrossing> mockedEventLog;
 
     @Test
-    public void doubleEntryTriggersShit() {
-        final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-
+    public void doubleEntryTriggersInvestigation() {
         context.checking(new Expectations(){{
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
@@ -39,6 +38,19 @@ public class LegacyProjectTest {
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam);
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
+    public void doubleExitTriggersInvestigation() {
+        context.checking(new Expectations(){{
+            exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
+        }});
+
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam);
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.calculateCharges();
     }
     //@InjectMocks private CongestionChargeSystem congestionChargeSystem;
@@ -71,7 +83,6 @@ public class LegacyProjectTest {
 
     @Test
     public void vehicleEnteringZoneLoggedIntoChargeSystem(){
-        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         assertEquals(EntryEvent.class, congestionChargeSystem.getCurrentEventLog().get(0).getClass());
@@ -81,7 +92,6 @@ public class LegacyProjectTest {
     @Test
     public void vehicleLeavingZoneLoggedIntoChargeSystem(){
         //previouslyRegisteredLeaving
-        Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
         CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
