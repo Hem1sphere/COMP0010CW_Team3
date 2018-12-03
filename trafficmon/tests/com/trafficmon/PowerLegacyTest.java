@@ -46,30 +46,41 @@ public class PowerLegacyTest{
     }
 
     @Test
-    public void driversChargedPenaltyIfInsufficientCredit() throws Exception {
+    public void notRegisteredOrInsufficientCreditReceivesPenalty() throws Exception {
         //static classes requiring power mock
         mockStatic(RegisteredCustomerAccountsService.class);
         mockStatic(OperationsTeam.class);
 
         OperationsTeam mockedOpsTeam = Mockito.mock(OperationsTeam.class);
-        RegisteredCustomerAccountsService mockRegCustAccService = Mockito.mock(RegisteredCustomerAccountsService.class);
-        Account mockAccount = Mockito.mock(Account.class);
+        RegisteredCustomerAccountsService registeredCustomerAccountsService = Mockito.mock(RegisteredCustomerAccountsService.class);
+        Account mockAccount1 = Mockito.mock(Account.class);
 
-        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(mockRegCustAccService);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
         when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
 
-        CongestionChargeSystem cgs = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
 
         Vehicle v1 = Vehicle.withRegistration("SCG1228G");
-        when(mockRegCustAccService.accountFor(any(Vehicle.class))).thenReturn(mockAccount);
+        when(registeredCustomerAccountsService.accountFor(any(Vehicle.class))).thenReturn(mockAccount1);
 
-        doThrow(InsufficientCreditException.class).when(mockAccount).deduct(any(BigDecimal.class));
+        doThrow(InsufficientCreditException.class).when(mockAccount1).deduct(any(BigDecimal.class));
 
-        cgs.vehicleEnteringZone(v1);
-        cgs.vehicleLeavingZone(v1);
-        cgs.calculateCharges();
+        congestionChargeSystem.vehicleEnteringZone(v1);
+        congestionChargeSystem.vehicleLeavingZone(v1);
+        congestionChargeSystem.calculateCharges();
 
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v1), any(BigDecimal.class));
+
+
+        //NotRegistered
+        Vehicle v2 = Vehicle.withRegistration("NTT1104K");
+        doThrow(AccountNotRegisteredException.class).when(registeredCustomerAccountsService).accountFor(v2);
+
+        congestionChargeSystem.vehicleEnteringZone(v2);
+        congestionChargeSystem.vehicleLeavingZone(v2);
+        congestionChargeSystem.calculateCharges();
+
+        verify(mockedOpsTeam).issuePenaltyNotice(eq(v2), any(BigDecimal.class));
 
     }
 }
