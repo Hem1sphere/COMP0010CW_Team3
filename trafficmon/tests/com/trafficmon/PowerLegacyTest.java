@@ -69,8 +69,7 @@ public class PowerLegacyTest{
         congestionChargeSystem.vehicleEnteringZone(v1);
         congestionChargeSystem.vehicleLeavingZone(v1);
         congestionChargeSystem.calculateCharges();
-
-//        verify(registeredCustomerAccountsService).accountFor(v1);
+        
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v1), any(BigDecimal.class));
 
 
@@ -89,20 +88,15 @@ public class PowerLegacyTest{
     @Test
     public void onceInOnceOutVehicleReceivesInvoice() throws Exception{
         mockStatic(RegisteredCustomerAccountsService.class);
-//        Account mockedAccount = mock(Account.class);
+        Account mockedAccount = mock(Account.class);
         AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
         when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         Vehicle vehicle01 = Vehicle.withRegistration("VEHICLE01");
-//        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(mockedAccount);
+        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(mockedAccount);
         congestionChargeSystem.getCurrentEventLog().add(new EntryEvent(vehicle01));
         congestionChargeSystem.getCurrentEventLog().add(new ExitEvent(vehicle01));
-        try {
-            congestionChargeSystem.calculateCharges();
-        }
-        catch (NullPointerException e){
-            
-        }
+        congestionChargeSystem.calculateCharges();
 
         verify(registeredCustomerAccountsService).accountFor(vehicle01);
     }
