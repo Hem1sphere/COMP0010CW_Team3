@@ -62,7 +62,7 @@ public class PowerLegacyTest{
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
 
         Vehicle v1 = Vehicle.withRegistration("SCG1228G");
-        when(registeredCustomerAccountsService.accountFor(any(Vehicle.class))).thenReturn(mockAccount1);
+        when(registeredCustomerAccountsService.accountFor(v1)).thenReturn(mockAccount1);
 
         doThrow(InsufficientCreditException.class).when(mockAccount1).deduct(any(BigDecimal.class));
 
@@ -70,6 +70,7 @@ public class PowerLegacyTest{
         congestionChargeSystem.vehicleLeavingZone(v1);
         congestionChargeSystem.calculateCharges();
 
+//        verify(registeredCustomerAccountsService).accountFor(v1);
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v1), any(BigDecimal.class));
 
 
@@ -84,4 +85,21 @@ public class PowerLegacyTest{
         verify(mockedOpsTeam).issuePenaltyNotice(eq(v2), any(BigDecimal.class));
 
     }
+
+    @Test
+    public void onceInOnceOutVehicleReceivesInvoice() throws Exception{
+        mockStatic(RegisteredCustomerAccountsService.class);
+        Account mockedAccount = mock(Account.class);
+        AccountsService registeredCustomerAccountsService = mock(RegisteredCustomerAccountsService.class);
+        when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
+        Vehicle vehicle01 = Vehicle.withRegistration("VEHICLE01");
+        when(registeredCustomerAccountsService.accountFor(vehicle01)).thenReturn(mockedAccount);
+        congestionChargeSystem.getCurrentEventLog().add(new EntryEvent(vehicle01));
+        congestionChargeSystem.getCurrentEventLog().add(new ExitEvent(vehicle01));
+        congestionChargeSystem.calculateCharges();
+
+        verify(registeredCustomerAccountsService).accountFor(vehicle01);
+    }
+
 }
