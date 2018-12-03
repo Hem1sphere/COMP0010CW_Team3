@@ -10,22 +10,34 @@ public class CongestionChargeSystem {
     //an event log that records all boundary crossing events
     private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
     private final PenaltiesService operationsTeam;
+    private final AccountsService accountsService;
 
-    //mutiple constructors are set up for testing purposes, could refactor to builder?
+    //multiple constructors are set up for testing purposes, could refactor to builder?
     public CongestionChargeSystem() {
         operationsTeam = OperationsTeam.getInstance();
         eventLog = new ArrayList<ZoneBoundaryCrossing>();
+        accountsService = RegisteredCustomerAccountsService.getInstance();
     }
 
     public CongestionChargeSystem(PenaltiesService operationsTeam) {
         this.operationsTeam = operationsTeam;
         eventLog = new ArrayList<ZoneBoundaryCrossing>();
+        accountsService = RegisteredCustomerAccountsService.getInstance();
     }
 
     public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
+        accountsService = RegisteredCustomerAccountsService.getInstance();
     }
+
+    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsService accountsService) {
+        this.operationsTeam = operationsTeam;
+        this.eventLog = eventLog;
+        RegisteredCustomerAccountsService.getInstance();
+        this.accountsService = accountsService;
+    }
+
 
     public void vehicleEnteringZone(Vehicle vehicle) {
         eventLog.add(new EntryEvent(vehicle));
@@ -69,7 +81,8 @@ public class CongestionChargeSystem {
                 BigDecimal charge = calculateChargeForTimeInZone(crossings);
 
                 try {
-                    RegisteredCustomerAccountsService.getInstance().accountFor(vehicle).deduct(charge);
+                    //should use an adapter but existing class is already based off an interface
+                    accountsService.accountFor(vehicle).deduct(charge);
                 } catch (InsufficientCreditException ice) {
                     operationsTeam.issuePenaltyNotice(vehicle, charge);
                 } catch (AccountNotRegisteredException e) {

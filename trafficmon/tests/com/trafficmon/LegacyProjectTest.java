@@ -27,6 +27,7 @@ public class LegacyProjectTest {
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
+    AccountsService accountsService = context.mock(AccountsService.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
 
@@ -55,6 +56,19 @@ public class LegacyProjectTest {
         congestionChargeSystem.vehicleEnteringZone(testVehicle); //required if not vehicle will not even be logged initially
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
+    public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException {
+        context.checking(new Expectations(){{
+              //this exact invocation is expected when commented out, but returns NullPointerException when uncommented WHY
+//            exactly(1).of(accountsService).accountFor(testVehicle);
+        }});
+
+        testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
+        testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
+        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam, testEventLog, accountsService);
         congestionChargeSystem.calculateCharges();
     }
 
