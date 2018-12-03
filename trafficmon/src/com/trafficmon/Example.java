@@ -1,9 +1,11 @@
 package com.trafficmon;
 
+import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
+
 public class Example {
     //quite useful to run the code and use debugger to see variable values
     public static void main(String[] args) throws Exception {
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("A123 XYZ"));
         delaySeconds(10);
         congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));

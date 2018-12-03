@@ -8,6 +8,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigDecimal;
 
+import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -23,7 +24,7 @@ public class PowerLegacyTest{
         //mockedOpsTeam is a mocked instance of OperationsTeam class
         when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
         //When congestion charge system calls for a new OperationTeam, return the mocked instance to them
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
@@ -36,7 +37,7 @@ public class PowerLegacyTest{
         mockStatic(OperationsTeam.class);
         OperationsTeam mockedOpsTeam = Mockito.mock(OperationsTeam.class);
         when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         Vehicle testVehicle = Vehicle.withRegistration("STARTOVER");
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
@@ -58,7 +59,7 @@ public class PowerLegacyTest{
         when(RegisteredCustomerAccountsService.getInstance()).thenReturn(registeredCustomerAccountsService);
         when(OperationsTeam.getInstance()).thenReturn(mockedOpsTeam);
 
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
 
         Vehicle v1 = Vehicle.withRegistration("SCG1228G");
         when(registeredCustomerAccountsService.accountFor(any(Vehicle.class))).thenReturn(mockAccount1);

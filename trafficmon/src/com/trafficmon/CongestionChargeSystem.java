@@ -12,24 +12,6 @@ public class CongestionChargeSystem {
     private final PenaltiesService operationsTeam;
     private final AccountsService accountsService;
 
-    //multiple constructors are set up for testing purposes, could refactor to builder?
-    public CongestionChargeSystem() {
-        operationsTeam = OperationsTeam.getInstance();
-        eventLog = new ArrayList<ZoneBoundaryCrossing>();
-        accountsService = RegisteredCustomerAccountsService.getInstance();
-    }
-
-    public CongestionChargeSystem(PenaltiesService operationsTeam) {
-        this.operationsTeam = operationsTeam;
-        eventLog = new ArrayList<ZoneBoundaryCrossing>();
-        accountsService = RegisteredCustomerAccountsService.getInstance();
-    }
-
-    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog) {
-        this.operationsTeam = operationsTeam;
-        this.eventLog = eventLog;
-        accountsService = RegisteredCustomerAccountsService.getInstance();
-    }
 
     public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsService accountsService) {
         this.operationsTeam = operationsTeam;

@@ -3,14 +3,13 @@ package com.trafficmon;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 
+import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
 import static org.junit.Assert.*;
 
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -30,7 +29,7 @@ public class LegacyProjectTest {
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.calculateCharges();
@@ -42,7 +41,7 @@ public class LegacyProjectTest {
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle); //required if not vehicle will not even be logged initially
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
@@ -58,7 +57,7 @@ public class LegacyProjectTest {
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
         testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam, testEventLog, accountsService);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsService(accountsService).build();
         congestionChargeSystem.calculateCharges();
     }
 
@@ -71,13 +70,13 @@ public class LegacyProjectTest {
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
         testEventLog.add(new ExitEvent(testVehicle, 1543807162400L));
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem(operationsTeam, testEventLog);
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).build();
         congestionChargeSystem.calculateCharges();
     }
 
     @Test
     public void vehicleEnteringZoneLoggedIntoChargeSystem(){
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         assertEquals(EntryEvent.class, congestionChargeSystem.getCurrentEventLog().get(0).getClass());
         assertEquals(testVehicle,congestionChargeSystem.getCurrentEventLog().get(0).getVehicle());
@@ -86,7 +85,7 @@ public class LegacyProjectTest {
     @Test
     public void vehicleLeavingZoneLoggedIntoChargeSystem(){
         //previouslyRegisteredLeaving
-        CongestionChargeSystem congestionChargeSystem = new CongestionChargeSystem();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         assertEquals(ExitEvent.class, congestionChargeSystem.getCurrentEventLog().get(1).getClass());
@@ -97,7 +96,7 @@ public class LegacyProjectTest {
         assertEquals(2, congestionChargeSystem.getCurrentEventLog().size());
     }
 
-    
+
     @Test
     public void mapOfSystemCorrectlyMapsVehiclesAndTheirCrossings(){
 
