@@ -18,4 +18,10 @@ public class AccountsServiceProviderAdapter implements AccountsServiceProvider {
     public void billAccount(Account account, BigDecimal charge) throws InsufficientCreditException {
         account.deduct(charge);
     }
+
+    public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException {
+        billAccount(getAccountForVehicle(vehicle), charge);
+    }
+
+
 }

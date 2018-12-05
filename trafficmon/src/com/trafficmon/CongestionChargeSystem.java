@@ -62,8 +62,7 @@ public class CongestionChargeSystem {
                 BigDecimal charge = calculateChargeForTimeInZone(crossings);
 
                 try {
-                    Account accountToBill = accountsServiceProvider.getAccountForVehicle(vehicle);
-                    accountsServiceProvider.billAccount(accountToBill, charge);
+                    accountsServiceProvider.billVehicleAccount(vehicle, charge);
                 } catch (InsufficientCreditException ice) {
                     operationsTeam.issuePenaltyNotice(vehicle, charge);
                 } catch (AccountNotRegisteredException e) {

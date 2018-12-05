@@ -55,8 +55,7 @@ public class LegacyProjectTest {
     @Test
     public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).getAccountForVehicle(testVehicle); will(returnValue(TEST_ACCOUNT));
-            exactly(1).of(accountsServiceProvider).billAccount(TEST_ACCOUNT,new BigDecimal(0.05));
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, new BigDecimal(0.05));
         }});
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
@@ -92,6 +91,10 @@ public class LegacyProjectTest {
             }
 
             public void billAccount(Account account, BigDecimal charge) throws InsufficientCreditException {
+                return;
+            }
+
+            public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException {
                 TEST_ACCOUNT.deduct(new BigDecimal(20));
             }
         }).build();
