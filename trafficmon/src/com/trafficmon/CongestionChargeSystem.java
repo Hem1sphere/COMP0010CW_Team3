@@ -62,7 +62,6 @@ public class CongestionChargeSystem {
                 BigDecimal charge = calculateChargeForTimeInZone(crossings);
 
                 try {
-                    //should use an adapter but existing class is already based off an interface
                     accountsServiceProvider.billAccount(vehicle, charge);
                 } catch (InsufficientCreditException ice) {
                     operationsTeam.issuePenaltyNotice(vehicle, charge);

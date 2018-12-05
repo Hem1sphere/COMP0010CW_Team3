@@ -63,6 +63,31 @@ public class LegacyProjectTest {
     }
 
     @Test
+    public void penaltyIsIssuedForUnregisteredAccount()  {
+        context.checking(new Expectations(){{
+            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));;
+        }});
+
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).build();
+        congestionChargeSystem.vehicleEnteringZone(testVehicle);
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        congestionChargeSystem.calculateCharges();
+    }
+
+
+    @Test //need to think of way to mock registered account with insufficient credit hmmmm
+    public void penaltyIsIssuedForInsufficientCredit() {
+        context.checking(new Expectations(){{
+//            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));;
+        }});
+
+        testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
+        testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
     public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
         //Needs to work on Timestamp
         context.checking(new Expectations(){{

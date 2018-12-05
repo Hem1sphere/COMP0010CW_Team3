@@ -4,6 +4,6 @@ import java.math.BigDecimal;
 
 public interface AccountsServiceProvider {
 
-    public void billAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException;
+    void billAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException;
 }
 
