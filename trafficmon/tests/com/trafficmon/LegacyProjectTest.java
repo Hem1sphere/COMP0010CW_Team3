@@ -86,15 +86,8 @@ public class LegacyProjectTest {
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
         testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
-            public Account getAccountForVehicle(Vehicle vehicle) {
-                return TEST_ACCOUNT;
-            }
 
-            public void billAccount(Account account, BigDecimal charge) throws InsufficientCreditException {
-                return;
-            }
-
-            public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException {
+            public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws InsufficientCreditException {
                 TEST_ACCOUNT.deduct(new BigDecimal(20));
             }
         }).build();
