@@ -10,13 +10,13 @@ public class CongestionChargeSystem {
     //an event log that records all boundary crossing events
     private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
     private final PenaltiesService operationsTeam;
-    private final AccountsService accountsService;
+    private final AccountsServiceProvider accountsServiceProvider;
 
 
-    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsService accountsService) {
+    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsServiceProvider accountsServiceProvider) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
-        this.accountsService = accountsService;
+        this.accountsServiceProvider = accountsServiceProvider;
     }
 
 
@@ -63,7 +63,7 @@ public class CongestionChargeSystem {
 
                 try {
                     //should use an adapter but existing class is already based off an interface
-                    accountsService.accountFor(vehicle).deduct(charge);
+                    accountsServiceProvider.billAccount(vehicle, charge);
                 } catch (InsufficientCreditException ice) {
                     operationsTeam.issuePenaltyNotice(vehicle, charge);
                 } catch (AccountNotRegisteredException e) {

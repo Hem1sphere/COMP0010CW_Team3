@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,10 @@ public class LegacyProjectTest {
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
-    AccountsService accountsService = context.mock(AccountsService.class);
+    AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
+
 
 
     @Test
@@ -49,22 +51,15 @@ public class LegacyProjectTest {
     }
 
     @Test
-    public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException {
+    public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-              //this exact invocation is expected when commented out, but returns NullPointerException when uncommented WHY
-//            exactly(1).of(accountsService).accountFor(testVehicle);
+            exactly(1).of(accountsServiceProvider).billAccount(testVehicle, new BigDecimal(0.05));
         }});
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
         testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsService(accountsService).build();
-        try {
-            congestionChargeSystem.calculateCharges();
-        }
-        catch (NullPointerException e)
-        {
-            //This is expected because there are no accounts
-        }
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
     }
 
     @Test

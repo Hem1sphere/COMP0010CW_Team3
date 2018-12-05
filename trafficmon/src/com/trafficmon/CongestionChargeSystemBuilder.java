@@ -6,7 +6,7 @@ import java.util.List;
 public class CongestionChargeSystemBuilder {
     private PenaltiesService operationsTeam = OperationsTeam.getInstance();
     private List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
-    private AccountsService accountsService = RegisteredCustomerAccountsService.getInstance();
+    private AccountsServiceProvider accountsServiceProvider = new AccountsServiceProviderAdapter(RegisteredCustomerAccountsService.getInstance());
 
     private CongestionChargeSystemBuilder() {};
 
@@ -24,12 +24,12 @@ public class CongestionChargeSystemBuilder {
         return this;
     }
 
-    public CongestionChargeSystemBuilder withAccountsService(AccountsService accountsService) {
-        this.accountsService = accountsService;
+    public CongestionChargeSystemBuilder withAccountsServiceProvider(AccountsServiceProvider accountsServiceProvider) {
+        this.accountsServiceProvider = accountsServiceProvider;
         return this;
     }
 
     public CongestionChargeSystem build() {
-        return new CongestionChargeSystem(operationsTeam, eventLog, accountsService);
+        return new CongestionChargeSystem(operationsTeam, eventLog, accountsServiceProvider);
     }
 }
