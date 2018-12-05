@@ -11,7 +11,11 @@ public class AccountsServiceProviderAdapter implements AccountsServiceProvider {
         this.accountsService = accountsService;
     }
 
-    public void billAccount(Vehicle vehicle, BigDecimal charge) throws AccountNotRegisteredException, InsufficientCreditException {
-        accountsService.accountFor(vehicle).deduct(charge);
+    public Account getAccountForVehicle(Vehicle vehicle) throws AccountNotRegisteredException {
+        return accountsService.accountFor(vehicle);
+    }
+
+    public void billAccount(Account account, BigDecimal charge) throws InsufficientCreditException {
+        account.deduct(charge);
     }
 }

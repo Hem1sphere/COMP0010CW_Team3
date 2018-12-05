@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class LegacyProjectTest {
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
     AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
+    private final Account TEST_ACCOUNT = new Account("test", testVehicle, new BigDecimal(10));
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
 
 
@@ -28,7 +30,7 @@ public class LegacyProjectTest {
     @Test
     public void doubleEntryTriggersInvestigation() {
         context.checking(new Expectations(){{
-//            exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
+            exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).build();
@@ -53,7 +55,8 @@ public class LegacyProjectTest {
     @Test
     public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billAccount(testVehicle, new BigDecimal(0.05));
+            exactly(1).of(accountsServiceProvider).getAccountForVehicle(testVehicle); will(returnValue(TEST_ACCOUNT));
+            exactly(1).of(accountsServiceProvider).billAccount(TEST_ACCOUNT,new BigDecimal(0.05));
         }});
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
@@ -65,25 +68,33 @@ public class LegacyProjectTest {
     @Test
     public void penaltyIsIssuedForUnregisteredAccount()  {
         context.checking(new Expectations(){{
-            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));;
-        }});
-
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).build();
-        congestionChargeSystem.vehicleEnteringZone(testVehicle);
-        congestionChargeSystem.vehicleLeavingZone(testVehicle);
-        congestionChargeSystem.calculateCharges();
-    }
-
-
-    @Test //need to think of way to mock registered account with insufficient credit hmmmm
-    public void penaltyIsIssuedForInsufficientCredit() {
-        context.checking(new Expectations(){{
-//            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));;
+            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));
         }});
 
         testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
         testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).withOperationsTeam(operationsTeam).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+
+    @Test
+    public void penaltyIsIssuedForInsufficientCredit() {
+        context.checking(new Expectations(){{
+            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, new BigDecimal(0.05));;
+        }});
+
+        testEventLog.add(new EntryEvent(testVehicle, 1543807162500L));
+        testEventLog.add(new ExitEvent(testVehicle, 1543807163000L));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
+            public Account getAccountForVehicle(Vehicle vehicle) {
+                return TEST_ACCOUNT;
+            }
+
+            public void billAccount(Account account, BigDecimal charge) throws InsufficientCreditException {
+                TEST_ACCOUNT.deduct(new BigDecimal(20));
+            }
+        }).build();
         congestionChargeSystem.calculateCharges();
     }
 
