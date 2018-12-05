@@ -2,10 +2,11 @@ package com.trafficmon;
 
 import java.math.BigDecimal;
 import java.util.*;
+import org.joda.time.*;
 
 public class CongestionChargeSystem {
 
-    public static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = new BigDecimal(0.05);
+    public static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = BigDecimal.valueOf(0.05);
 
     //an event log that records all boundary crossing events
     private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
@@ -85,7 +86,7 @@ public class CongestionChargeSystem {
 
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
 
-            if (crossing.timestamp() < lastEvent.timestamp()) {
+            if (crossing.timestamp().isBefore( lastEvent.timestamp())) {
                 return false;
             }
             if (crossing instanceof EntryEvent && lastEvent instanceof EntryEvent) {
@@ -101,9 +102,5 @@ public class CongestionChargeSystem {
     }
 
 
-    //Below are getter methods for testing
-    public List<ZoneBoundaryCrossing> getCurrentEventLog(){
-        return eventLog;
-    }
 
 }
