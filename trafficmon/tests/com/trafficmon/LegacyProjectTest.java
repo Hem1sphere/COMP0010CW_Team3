@@ -64,8 +64,10 @@ public class LegacyProjectTest {
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
                 .withHourOfDay(14)
+                .withMinuteOfHour(30)
                 .withSecondOfMinute(40);
         DateTime exitTime = entryTime.withHourOfDay(17)
+                .withMinuteOfHour(30)
                 .withSecondOfMinute(59);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
@@ -79,8 +81,10 @@ public class LegacyProjectTest {
 
         DateTime entryTime2 = new DateTime(DateTimeZone.UTC)
                 .withHourOfDay(18)
+                .withMinuteOfHour(30)
                 .withSecondOfMinute(40);
         DateTime exitTime2 = entryTime.withHourOfDay(22)
+                .withMinuteOfHour(30)
                 .withSecondOfMinute(59);
         testEventLog.add(new EntryEvent(testVehicle, entryTime2));
         testEventLog.add(new ExitEvent(testVehicle, exitTime2));
@@ -95,8 +99,10 @@ public class LegacyProjectTest {
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
-                .withHourOfDay(14);
-        DateTime exitTime = entryTime.withHourOfDay(17);
+                .withHourOfDay(14)
+                .withMinuteOfHour(30);
+        DateTime exitTime = entryTime.withHourOfDay(17)
+                .withMinuteOfHour(30);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withEventLog(testEventLog).withOperationsTeam(operationsTeam).build();
@@ -111,8 +117,10 @@ public class LegacyProjectTest {
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
-                .withHourOfDay(14);
-        DateTime exitTime = entryTime.withHourOfDay(17);
+                .withHourOfDay(14)
+                .withMinuteOfHour(30);
+        DateTime exitTime = entryTime.withHourOfDay(17)
+                .withMinuteOfHour(30);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
