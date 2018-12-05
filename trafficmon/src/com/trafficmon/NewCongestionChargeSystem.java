@@ -105,7 +105,7 @@ public class NewCongestionChargeSystem {
         }
         //else, check if the vehicle should be charged multiple times.
         else{
-
+            charge = chargeForThisPeriod(crossings);
         }
 
 
@@ -115,7 +115,7 @@ public class NewCongestionChargeSystem {
     private BigDecimal chargeForThisPeriod(List<ZoneBoundaryCrossing> periodCrossings){
         ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
         long firstEntryTime = firstEntry.timestamp();
-        BigDecimal periodCharge = new BigDecimal(0);
+        BigDecimal periodCharge = MINIMUM_CHARGE;
         if(firstEntryTime > CHARGE_SEPERATION_TIME){
             periodCharge = MEDIUM_CHAEGE;
         }
