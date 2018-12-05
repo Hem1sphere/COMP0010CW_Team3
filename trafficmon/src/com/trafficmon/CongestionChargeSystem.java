@@ -11,12 +11,13 @@ public class CongestionChargeSystem {
     private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
     private final PenaltiesService operationsTeam;
     private final AccountsServiceProvider accountsServiceProvider;
+    private final ChargePattern chargePattern;
 
-
-    public CongestionChargeSystem(PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsServiceProvider accountsServiceProvider) {
+    public CongestionChargeSystem(ChargePattern chargePattern, PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsServiceProvider accountsServiceProvider) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
         this.accountsServiceProvider = accountsServiceProvider;
+        this.chargePattern = chargePattern;
     }
 
 
@@ -31,21 +32,17 @@ public class CongestionChargeSystem {
         eventLog.add(new ExitEvent(vehicle));
     }
 
-    //Calculates charges at the end of the day
     public void calculateCharges() {
 
-        //A Map to map crossing events to each vehicle
         Map<Vehicle, List<ZoneBoundaryCrossing>> crossingsByVehicle = new HashMap<Vehicle, List<ZoneBoundaryCrossing>>();
 
-        //iterate through boundary crossing events
         for (ZoneBoundaryCrossing crossing : eventLog) {
 
-            //check if a vehicle has not already been added to the map
             if (!crossingsByVehicle.containsKey(crossing.getVehicle())) {
-                //if not added then create its entry with empty boundary crossing event list
+
                 crossingsByVehicle.put(crossing.getVehicle(), new ArrayList<ZoneBoundaryCrossing>());
             }
-            //add this boundary crossing event to this vehicle
+
             crossingsByVehicle.get(crossing.getVehicle()).add(crossing);
         }
 
@@ -59,7 +56,7 @@ public class CongestionChargeSystem {
                 operationsTeam.triggerInvestigationInto(vehicle);
             } else {
 
-                BigDecimal charge = calculateChargeForTimeInZone(crossings);
+                BigDecimal charge = chargePattern.specifiedChargeCalculation(crossings);
 
                 try {
                     accountsServiceProvider.billVehicleAccount(vehicle, charge);
@@ -70,28 +67,6 @@ public class CongestionChargeSystem {
                 }
             }
         }
-    }
-
-    private BigDecimal calculateChargeForTimeInZone(List<ZoneBoundaryCrossing> crossings) {
-
-        BigDecimal charge = new BigDecimal(0);
-
-        ZoneBoundaryCrossing lastEvent = crossings.get(0);
-
-
-        //Adds the fees applied to  each period of stay together
-        for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
-
-            if (crossing instanceof ExitEvent) {
-                charge = charge.add(
-                        new BigDecimal(minutesBetween(lastEvent.timestamp(), crossing.timestamp()))
-                                .multiply(CHARGE_RATE_POUNDS_PER_MINUTE));
-            }
-
-            lastEvent = crossing;
-        }
-
-        return charge;
     }
 
     //checks if the vehicle ever passed through the boundary
@@ -106,12 +81,10 @@ public class CongestionChargeSystem {
 
     private boolean checkOrderingOf(List<ZoneBoundaryCrossing> crossings) {
 
-        //lastevent for the earlier event, croosing for the later event, compare the two and iterate through the list
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
-        //sublist excludes checked event
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
-            //Below are abnormal events that triggers investigation
+
             if (crossing.timestamp() < lastEvent.timestamp()) {
                 return false;
             }
@@ -126,11 +99,6 @@ public class CongestionChargeSystem {
 
         return true;
     }
-
-    private int minutesBetween(long startTimeMs, long endTimeMs) {
-        return (int) Math.ceil((endTimeMs - startTimeMs) / (1000.0 * 60.0));
-    }
-
 
 
     //Below are getter methods for testing
