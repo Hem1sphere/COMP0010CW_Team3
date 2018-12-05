@@ -1,5 +1,8 @@
 package com.trafficmon;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -7,28 +10,20 @@ import static com.trafficmon.CongestionChargeSystem.CHARGE_RATE_POUNDS_PER_MINUT
 
 public class LegacyChargeSystem implements ChargePattern{
     public BigDecimal specifiedChargeCalculation(List<ZoneBoundaryCrossing> crossings) {
-        BigDecimal charge = new BigDecimal(0);
+        BigDecimal charge = BigDecimal.valueOf(0);
 
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
-
-        //Adds the fees applied to  each period of stay together
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
-
             if (crossing instanceof ExitEvent) {
                 charge = charge.add(
-                        new BigDecimal(minutesBetween(lastEvent.timestamp(), crossing.timestamp()))
+                        BigDecimal.valueOf(TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()))
                                 .multiply(CHARGE_RATE_POUNDS_PER_MINUTE));
             }
 
             lastEvent = crossing;
         }
-
         return charge;
     }
 
-
-    private int minutesBetween(long startTimeMs, long endTimeMs) {
-        return (int) Math.ceil((endTimeMs - startTimeMs) / (1000.0 * 60.0));
-    }
 }

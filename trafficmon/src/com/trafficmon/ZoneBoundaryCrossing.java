@@ -1,25 +1,30 @@
 package com.trafficmon;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import javax.print.attribute.standard.DateTimeAtCompleted;
+
 public abstract class ZoneBoundaryCrossing {
 
     private final Vehicle vehicle;
-    private final long time;
+    private final DateTime currentTime;
 
     public ZoneBoundaryCrossing(Vehicle vehicle) {
         this.vehicle = vehicle;
-        this.time = System.currentTimeMillis();
+        this.currentTime = new DateTime(DateTimeZone.UTC);
     }
 
-    public ZoneBoundaryCrossing(Vehicle vehicle, long time) {
+    public ZoneBoundaryCrossing(Vehicle vehicle, DateTime time) {
         this.vehicle = vehicle;
-        this.time = time;
+        this.currentTime = time;
     }
 
     public Vehicle getVehicle() {
         return vehicle;
     }
 
-    public long timestamp() {
-        return time;
+    public DateTime timestamp() {
+        return currentTime;
     }
 }
