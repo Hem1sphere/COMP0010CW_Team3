@@ -37,7 +37,8 @@ public class RevisedChargeMethod implements ChargeMethod {
         //else, check if the vehicle should be charged multiple times.
         //If the driver should be charged an ADDITIONAL 12 pounds, simply delete else and do charge += chargeForThisPeriod(croossings);
         else{
-            charge = chargeForThisPeriodWK(crossings);
+            charge = chargeForThisPeriod(crossings);
+            //charge = chargeForThisPeriodWK(crossings);
         }
         return charge;
     }
@@ -45,9 +46,9 @@ public class RevisedChargeMethod implements ChargeMethod {
     private BigDecimal chargeForThisPeriod(List<ZoneBoundaryCrossing> periodCrossings){
         ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
         DateTime firstEntryTime = firstEntry.timestamp();
-        BigDecimal periodCharge = MINIMUM_CHARGE;
+        BigDecimal periodCharge = MEDIUM_CHARGE;
         if(firstEntryTime.getHourOfDay() >= CHARGE_SEPARATION_TIME){
-            periodCharge = MEDIUM_CHARGE;
+            periodCharge = MINIMUM_CHARGE;
         }
         ZoneBoundaryCrossing lastEvent = periodCrossings.get(0);
         int currentIndex = 1;
@@ -63,7 +64,7 @@ public class RevisedChargeMethod implements ChargeMethod {
     private BigDecimal chargeForThisPeriodWK(List<ZoneBoundaryCrossing> periodCrossings){
         ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
         DateTime firstEntryTime = firstEntry.timestamp();
-        if(firstEntryTime.getHourOfDay() > CHARGE_SEPARATION_TIME){
+        if(firstEntryTime.getHourOfDay() >= CHARGE_SEPARATION_TIME){
              return MINIMUM_CHARGE;
         }
         else {

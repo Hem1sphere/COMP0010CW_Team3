@@ -127,7 +127,7 @@ public class NewProjectTest {
     @Test
     public void entryBeforeAndAfterSeparationTimeIsNotDoublyCharged() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE);
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE.add(MINIMUM_CHARGE));
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
