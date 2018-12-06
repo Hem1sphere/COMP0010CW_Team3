@@ -1,15 +1,13 @@
 package com.trafficmon;
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 import static com.trafficmon.CongestionChargeSystem.CHARGE_RATE_POUNDS_PER_MINUTE;
 
+
 public class LegacyChargeSystem implements ChargePattern{
-    public BigDecimal specifiedChargeCalculation(List<ZoneBoundaryCrossing> crossings) {
+    public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings) {
         BigDecimal charge = BigDecimal.valueOf(0);
 
         ZoneBoundaryCrossing lastEvent = crossings.get(0);

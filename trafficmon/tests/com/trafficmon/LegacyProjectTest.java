@@ -24,16 +24,16 @@ public class LegacyProjectTest {
 
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
     AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
-    private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-    private final Account TEST_ACCOUNT = new Account("test", testVehicle, new BigDecimal(10));
+
+    private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
+    private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, new BigDecimal(10));
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
     private ChargePattern legacyChargeSystem = new LegacyChargeSystem();
 
 
-
     @Test
     public void doubleEntryTriggersInvestigation() {
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
@@ -45,7 +45,7 @@ public class LegacyProjectTest {
 
     @Test
     public void doubleExitTriggersInvestigation() {
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
@@ -58,7 +58,7 @@ public class LegacyProjectTest {
 
     @Test
     public void deductSystemIsWorkingProperly() throws AccountNotRegisteredException, InsufficientCreditException {
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(9.00).setScale(2, RoundingMode.CEILING));
         }});
 
@@ -75,10 +75,11 @@ public class LegacyProjectTest {
         congestionChargeSystem.calculateCharges();
 
 
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(21.00).setScale(2, RoundingMode.CEILING));
         }});
 
+        //second entry for the same vehicle to verify charges add up correctly
         DateTime entryTime2 = new DateTime(DateTimeZone.UTC)
                 .withHourOfDay(18)
                 .withMinuteOfHour(30)
@@ -93,8 +94,8 @@ public class LegacyProjectTest {
     }
 
     @Test
-    public void penaltyIsIssuedForUnregisteredAccount()  {
-        context.checking(new Expectations(){{
+    public void penaltyIsIssuedForUnregisteredAccount() {
+        context.checking(new Expectations() {{
             exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, BigDecimal.valueOf(9.00).setScale(2, RoundingMode.CEILING));
         }});
 
@@ -112,8 +113,9 @@ public class LegacyProjectTest {
 
     @Test
     public void penaltyIsIssuedForInsufficientCredit() {
-        context.checking(new Expectations(){{
-            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, BigDecimal.valueOf(9.00).setScale(2, RoundingMode.CEILING));;
+        context.checking(new Expectations() {{
+            exactly(1).of(operationsTeam).issuePenaltyNotice(testVehicle, BigDecimal.valueOf(9.00).setScale(2, RoundingMode.CEILING));
+            ;
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
@@ -126,15 +128,16 @@ public class LegacyProjectTest {
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
 
             public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws InsufficientCreditException {
-                TEST_ACCOUNT.deduct(new BigDecimal(20));
+                TEST_ACCOUNT.deduct(new BigDecimal(11)); //charge has to be above balance of TEST_ACCOUNT for exception to be thrown
             }
+
         }).build();
         congestionChargeSystem.calculateCharges();
     }
 
     @Test
-    public void exitTimeEarlierThanEntryTimeTriggersInvestigation(){
-        context.checking(new Expectations(){{
+    public void exitTimeEarlierThanEntryTimeTriggersInvestigation() {
+        context.checking(new Expectations() {{
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
@@ -148,26 +151,27 @@ public class LegacyProjectTest {
     }
 
     @Test
-    public void vehicleEnteringZoneLoggedIntoChargeSystem(){
+    public void vehicleEnteringZoneIsLogged() {
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         assertEquals(EntryEvent.class, testEventLog.get(0).getClass());
-        assertEquals(testVehicle,testEventLog.get(0).getVehicle());
+        assertEquals(testVehicle, testEventLog.get(0).getVehicle());
     }
 
     @Test
-    public void vehicleLeavingZoneLoggedIntoChargeSystem(){
-        //previouslyRegisteredLeaving
+    public void vehicleLeavingZoneIsLogged() {
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         assertEquals(ExitEvent.class, testEventLog.get(1).getClass());
-        assertEquals(testVehicle,testEventLog.get(1).getVehicle());
-        //notRegisteredLeaving
-        Vehicle testVehicle2 = Vehicle.withRegistration("NOTEXIST");
-        congestionChargeSystem.vehicleLeavingZone(testVehicle2);
-        assertEquals(2, testEventLog.size());
+        assertEquals(testVehicle, testEventLog.get(1).getVehicle());
+    }
+
+    @Test
+    public void unregisteredVehiclesAreNotLogged() { //unregistered vehicle (i.e. exit before entry) should not be logged
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withEventLog(testEventLog).build();
+        congestionChargeSystem.vehicleLeavingZone(testVehicle);
+        assertEquals(0, testEventLog.size());
     }
 
 }
-

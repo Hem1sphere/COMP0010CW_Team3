@@ -2,7 +2,6 @@ package com.trafficmon;
 
 import java.math.BigDecimal;
 import java.util.*;
-import org.joda.time.*;
 
 public class CongestionChargeSystem {
 
@@ -38,12 +37,9 @@ public class CongestionChargeSystem {
         Map<Vehicle, List<ZoneBoundaryCrossing>> crossingsByVehicle = new HashMap<Vehicle, List<ZoneBoundaryCrossing>>();
 
         for (ZoneBoundaryCrossing crossing : eventLog) {
-
             if (!crossingsByVehicle.containsKey(crossing.getVehicle())) {
-
                 crossingsByVehicle.put(crossing.getVehicle(), new ArrayList<ZoneBoundaryCrossing>());
             }
-
             crossingsByVehicle.get(crossing.getVehicle()).add(crossing);
         }
 
@@ -57,7 +53,7 @@ public class CongestionChargeSystem {
                 operationsTeam.triggerInvestigationInto(vehicle);
             } else {
 
-                BigDecimal charge = chargePattern.specifiedChargeCalculation(crossings);
+                BigDecimal charge = chargePattern.calculateChargeForVehicle(crossings);
 
                 try {
                     accountsServiceProvider.billVehicleAccount(vehicle, charge);
