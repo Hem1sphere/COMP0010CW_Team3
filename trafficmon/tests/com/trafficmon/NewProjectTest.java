@@ -16,7 +16,7 @@ import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSyst
 
 public class NewProjectTest {
 
-    public static final int CHARGE_SEPERATION_TIME = LongStayOverMultipleEntryChargeSystem.CHARGE_SEPERATION_TIME;
+    public static final int CHARGE_SEPARATION_TIME = LongStayOverMultipleEntryChargeSystem.CHARGE_SEPARATION_TIME;
     public static final int LONGEST_MINUTE_SPENT_IN_ZONE = LongStayOverMultipleEntryChargeSystem.LONGEST_MINUTE_SPENT_IN_ZONE;
     public static final int LONGEST_OUT_OF_ZONE_MINUTE = LongStayOverMultipleEntryChargeSystem.LONGEST_OUT_OF_ZONE_MINUTE;
     public static final BigDecimal MINIMUM_CHARGE = LongStayOverMultipleEntryChargeSystem.MINIMUM_CHARGE;
