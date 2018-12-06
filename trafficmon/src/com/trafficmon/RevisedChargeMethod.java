@@ -46,7 +46,7 @@ public class RevisedChargeMethod implements ChargeMethod {
         ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
         DateTime firstEntryTime = firstEntry.timestamp();
         BigDecimal periodCharge = MINIMUM_CHARGE;
-        if(firstEntryTime.getHourOfDay() > CHARGE_SEPARATION_TIME){
+        if(firstEntryTime.getHourOfDay() >= CHARGE_SEPARATION_TIME){
             periodCharge = MEDIUM_CHARGE;
         }
         ZoneBoundaryCrossing lastEvent = periodCrossings.get(0);
