@@ -34,23 +34,57 @@ public class NewProjectTest {
     private ChargePattern longStayOverMultipleEntryChargeSystem = new LongStayOverMultipleEntryChargeSystem();
 
 
+    @Test
+    public void timeSpentInZoneOverTimeLimitChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations(){{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(12));
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC)
+                .withHourOfDay(6)
+                .withMinuteOfHour(30);
+        DateTime exitTime = entryTime.
+                withHourOfDay(10)
+                .withMinuteOfHour(31); //4 hour and 1 minute, should charge max
+        testEventLog.add(new EntryEvent(testVehicle, entryTime));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+
     //not working, expecting 6 but getting 4
     @Test
     public void enterZoneBeforeSeparationTimeWithoutOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+        //without overlap - e.g 8am - 11am
         context.checking(new Expectations(){{
             exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(6.00).setScale(2, RoundingMode.CEILING));
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
-                .withHourOfDay(9)
-                .withMinuteOfHour(30);
+                .withHourOfDay(8);
         DateTime exitTime = entryTime.
-                withHourOfDay(12)
-                .withMinuteOfHour(30);
+                withHourOfDay(11);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
-
     }
+
+    @Test
+    public void enterZoneBeforeSeparationTimeWithOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations(){{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(6.00).setScale(2, RoundingMode.CEILING));
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC)
+                .withHourOfDay(13);
+        DateTime exitTime = entryTime.
+                withHourOfDay(15);
+        testEventLog.add(new EntryEvent(testVehicle, entryTime));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
 }
