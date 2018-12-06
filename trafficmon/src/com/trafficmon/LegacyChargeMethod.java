@@ -6,7 +6,7 @@ import java.util.List;
 import static com.trafficmon.CongestionChargeSystem.CHARGE_RATE_POUNDS_PER_MINUTE;
 
 
-public class LegacyChargeSystem implements ChargePattern{
+public class LegacyChargeMethod implements ChargeMethod {
     public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings) {
         BigDecimal charge = BigDecimal.valueOf(0);
 

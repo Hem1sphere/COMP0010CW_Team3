@@ -11,13 +11,13 @@ public class CongestionChargeSystem {
     private final List<ZoneBoundaryCrossing> eventLog; //extract as interface????
     private final PenaltiesService operationsTeam;
     private final AccountsServiceProvider accountsServiceProvider;
-    private final ChargePattern chargePattern;
+    private final ChargeMethod chargeMethod;
 
-    public CongestionChargeSystem(ChargePattern chargePattern, PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsServiceProvider accountsServiceProvider) {
+    public CongestionChargeSystem(ChargeMethod chargeMethod, PenaltiesService operationsTeam, List<ZoneBoundaryCrossing> eventLog, AccountsServiceProvider accountsServiceProvider) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
         this.accountsServiceProvider = accountsServiceProvider;
-        this.chargePattern = chargePattern;
+        this.chargeMethod = chargeMethod;
     }
 
 
@@ -53,7 +53,7 @@ public class CongestionChargeSystem {
                 operationsTeam.triggerInvestigationInto(vehicle);
             } else {
 
-                BigDecimal charge = chargePattern.calculateChargeForVehicle(crossings);
+                BigDecimal charge = chargeMethod.calculateChargeForVehicle(crossings);
 
                 try {
                     accountsServiceProvider.billVehicleAccount(vehicle, charge);

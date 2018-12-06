@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class LegacyProjectTest {
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, new BigDecimal(10));
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
-    private ChargePattern legacyChargeSystem = new LegacyChargeSystem();
+    private ChargeMethod legacyChargeMethod = new LegacyChargeMethod();
 
 
     @Test
@@ -37,7 +36,7 @@ public class LegacyProjectTest {
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.vehicleEnteringZone(testVehicle);
         congestionChargeSystem.calculateCharges();
@@ -49,7 +48,7 @@ public class LegacyProjectTest {
             exactly(1).of(operationsTeam).triggerInvestigationInto(testVehicle);
         }});
 
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.vehicleEnteringZone(testVehicle); //required if not vehicle will not even be logged initially
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
         congestionChargeSystem.vehicleLeavingZone(testVehicle);
@@ -71,7 +70,7 @@ public class LegacyProjectTest {
                 .withSecondOfMinute(59);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
 
 
@@ -89,7 +88,7 @@ public class LegacyProjectTest {
                 .withSecondOfMinute(59);
         testEventLog.add(new EntryEvent(testVehicle, entryTime2));
         testEventLog.add(new ExitEvent(testVehicle, exitTime2));
-        CongestionChargeSystem congestionChargeSystem2 = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem2 = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem2.calculateCharges();
     }
 
@@ -106,7 +105,7 @@ public class LegacyProjectTest {
                 .withMinuteOfHour(30);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withEventLog(testEventLog).withOperationsTeam(operationsTeam).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withEventLog(testEventLog).withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.calculateCharges();
     }
 
@@ -125,7 +124,7 @@ public class LegacyProjectTest {
                 .withMinuteOfHour(30);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
 
             public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws InsufficientCreditException {
                 TEST_ACCOUNT.deduct(new BigDecimal(11)); //charge has to be above balance of TEST_ACCOUNT for exception to be thrown
@@ -146,7 +145,7 @@ public class LegacyProjectTest {
         DateTime exitTime = entryTime.withHourOfDay(17);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).build();
         congestionChargeSystem.calculateCharges();
     }
 

@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
+public class RevisedChargeMethod implements ChargeMethod {
 
     public static final int CHARGE_SEPARATION_TIME = 14;
     public static final int LONGEST_MINUTE_SPENT_IN_ZONE = 240;
@@ -13,7 +13,6 @@ public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
     public static final BigDecimal MEDIUM_CHARGE = BigDecimal.valueOf(6);
     public static final BigDecimal MAXIMUM_CHARGE = BigDecimal.valueOf(12);
 
-    //an event log that records all boundary crossing events
 
     public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings) {
 
@@ -38,7 +37,7 @@ public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
         //else, check if the vehicle should be charged multiple times.
         //If the driver should be charged an ADDITIONAL 12 pounds, simply delete else and do charge += chargeForThisPeriod(croossings);
         else{
-            charge = chargeForThisPeriod(crossings);
+            charge = chargeForThisPeriodWK(crossings);
         }
         return charge;
     }
@@ -59,6 +58,17 @@ public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
             else currentIndex++;
         }
         return periodCharge;
+    }
+
+    private BigDecimal chargeForThisPeriodWK(List<ZoneBoundaryCrossing> periodCrossings){
+        ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
+        DateTime firstEntryTime = firstEntry.timestamp();
+        if(firstEntryTime.getHourOfDay() > CHARGE_SEPARATION_TIME){
+             return MINIMUM_CHARGE;
+        }
+        else {
+            return MEDIUM_CHARGE;
+        }
     }
 
 

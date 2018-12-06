@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,28 +15,25 @@ import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSyst
 
 public class NewProjectTest {
 
-    public static final int CHARGE_SEPARATION_TIME = LongStayOverMultipleEntryChargeSystem.CHARGE_SEPARATION_TIME;
-    public static final int LONGEST_MINUTE_SPENT_IN_ZONE = LongStayOverMultipleEntryChargeSystem.LONGEST_MINUTE_SPENT_IN_ZONE;
-    public static final int LONGEST_OUT_OF_ZONE_MINUTE = LongStayOverMultipleEntryChargeSystem.LONGEST_OUT_OF_ZONE_MINUTE;
-    public static final BigDecimal MINIMUM_CHARGE = LongStayOverMultipleEntryChargeSystem.MINIMUM_CHARGE;
-    public static final BigDecimal MEDIUM_CHARGE = LongStayOverMultipleEntryChargeSystem.MEDIUM_CHARGE;
-    public static final BigDecimal MAXIMUM_CHARGE = LongStayOverMultipleEntryChargeSystem.MAXIMUM_CHARGE;
+    public static final BigDecimal MINIMUM_CHARGE = RevisedChargeMethod.MINIMUM_CHARGE;
+    public static final BigDecimal MEDIUM_CHARGE = RevisedChargeMethod.MEDIUM_CHARGE;
+    public static final BigDecimal MAXIMUM_CHARGE = RevisedChargeMethod.MAXIMUM_CHARGE;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
     PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
     AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
-    private final Vehicle testVehicle = Vehicle.withRegistration("TOOKMESOLONG");
-    private final Account TEST_ACCOUNT = new Account("test", testVehicle, new BigDecimal(10));
+    private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
+    private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, BigDecimal.valueOf(10));
     private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
-    private ChargePattern longStayOverMultipleEntryChargeSystem = new LongStayOverMultipleEntryChargeSystem();
+    private ChargeMethod revisedChargeMethod = new RevisedChargeMethod();
 
 
     @Test
-    public void timeSpentInZoneOverTimeLimitChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+    public void timeSpentInZoneOverTimeLimitAtOneGoIsChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(12));
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MAXIMUM_CHARGE);
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
@@ -48,42 +44,93 @@ public class NewProjectTest {
                 .withMinuteOfHour(31); //4 hour and 1 minute, should charge max
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
+    public void totalTimeSpentInZoneThroughoutTheDayOverTimeLimitIsChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations(){{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MAXIMUM_CHARGE);
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC)
+                .withHourOfDay(6)
+                .withMinuteOfHour(30);
+        DateTime exitTime = entryTime.
+                withHourOfDay(8)
+                .withMinuteOfHour(30); //first period of 2hours
+        DateTime entryTime2 = entryTime.
+                withHourOfDay(19)
+                .withMinuteOfHour(00);
+        DateTime exitTime2 = entryTime.
+                withHourOfDay(21)
+                .withMinuteOfHour(30); //second period of 2.5hours
+        testEventLog.add(new EntryEvent(testVehicle, entryTime));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        testEventLog.add(new EntryEvent(testVehicle, entryTime2));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime2));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
 
 
-    //not working, expecting 6 but getting 4
+
     @Test
-    public void enterZoneBeforeSeparationTimeWithoutOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
-        //without overlap - e.g 8am - 11am
+    public void enterZoneBeforeSeparationTimeChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(6.00).setScale(2, RoundingMode.CEILING));
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE);
         }});
 
-        DateTime entryTime = new DateTime(DateTimeZone.UTC)
+        DateTime entryTime = new DateTime(DateTimeZone.UTC) //entry time at 8am
                 .withHourOfDay(8);
         DateTime exitTime = entryTime.
                 withHourOfDay(11);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
 
     @Test
-    public void enterZoneBeforeSeparationTimeWithOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+    public void enterZoneAfterSeparationTimeChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, BigDecimal.valueOf(6.00).setScale(2, RoundingMode.CEILING));
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MINIMUM_CHARGE);
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC) //entry time at 3pm
+                .withHourOfDay(15);
+        DateTime exitTime = entryTime.
+                withHourOfDay(18);
+        testEventLog.add(new EntryEvent(testVehicle, entryTime));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
+    public void entryBeforeAndAfterSeparationTimeIsNotDoublyCharged() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations(){{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE);
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
-                .withHourOfDay(13);
+                .withHourOfDay(8)
+                .withMinuteOfHour(30);
         DateTime exitTime = entryTime.
-                withHourOfDay(15);
+                withHourOfDay(10)
+                .withMinuteOfHour(30); //enter before 2pm for 2 hours
+        DateTime entryTime2 = entryTime.
+                withHourOfDay(19)
+                .withMinuteOfHour(00);
+        DateTime exitTime2 = entryTime.
+                withHourOfDay(20)
+                .withMinuteOfHour(30); //enter after 2pm for 1.5hours, total < 4hours
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(longStayOverMultipleEntryChargeSystem).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        testEventLog.add(new EntryEvent(testVehicle, entryTime2));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime2));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
 
