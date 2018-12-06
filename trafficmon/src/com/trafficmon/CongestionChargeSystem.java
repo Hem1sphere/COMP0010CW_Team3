@@ -43,8 +43,10 @@ public class CongestionChargeSystem {
             crossingsByVehicle.get(crossing.getVehicle()).add(crossing);
         }
 
+        dealSingleVehicleCrossingRecord(crossingsByVehicle);
+    }
 
-        //Entry that includes a vehicle and all its boundary crossing events (lists)
+    private void dealSingleVehicleCrossingRecord(Map<Vehicle, List<ZoneBoundaryCrossing>> crossingsByVehicle) {
         for (Map.Entry<Vehicle, List<ZoneBoundaryCrossing>> vehicleCrossings : crossingsByVehicle.entrySet()) {
             Vehicle vehicle = vehicleCrossings.getKey();
             List<ZoneBoundaryCrossing> crossings = vehicleCrossings.getValue();
