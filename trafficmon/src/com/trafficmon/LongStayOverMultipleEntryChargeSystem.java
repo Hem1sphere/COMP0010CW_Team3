@@ -1,14 +1,9 @@
 package com.trafficmon;
 
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import sun.awt.geom.Crossings;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
 
@@ -16,7 +11,7 @@ public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
     public static final int LONGEST_MINUTE_SPENT_IN_ZONE = 240;
     public static final int LONGEST_OUT_OF_ZONE_MINUTE = 240;
     public static final BigDecimal MINIMUM_CHARGE = BigDecimal.valueOf(4);
-    public static final BigDecimal MEDIUM_CHAEGE = BigDecimal.valueOf(6);
+    public static final BigDecimal MEDIUM_CHARGE = BigDecimal.valueOf(6);
     public static final BigDecimal MAXIMUM_CHARGE = BigDecimal.valueOf(12);
 
     //an event log that records all boundary crossing events
@@ -54,7 +49,7 @@ public class LongStayOverMultipleEntryChargeSystem implements ChargePattern {
         DateTime firstEntryTime = firstEntry.timestamp();
         BigDecimal periodCharge = MINIMUM_CHARGE;
         if(firstEntryTime.getHourOfDay() > CHARGE_SEPERATION_TIME){
-            periodCharge = MEDIUM_CHAEGE;
+            periodCharge = MEDIUM_CHARGE;
         }
         ZoneBoundaryCrossing lastEvent = periodCrossings.get(0);
         int currentIndex = 1;
