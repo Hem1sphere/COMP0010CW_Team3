@@ -77,15 +77,31 @@ public class NewProjectTest {
 
 
     @Test
-    public void enterZoneBeforeSeparationTimeChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+    public void enterZoneBeforeSeparationTimeWithoutOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations(){{
             exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE);
         }});
 
-        DateTime entryTime = new DateTime(DateTimeZone.UTC) //entry time at 8am
+        DateTime entryTime = new DateTime(DateTimeZone.UTC) //8am to 11am
                 .withHourOfDay(8);
         DateTime exitTime = entryTime.
                 withHourOfDay(11);
+        testEventLog.add(new EntryEvent(testVehicle, entryTime));
+        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
+    @Test
+    public void enterZoneBeforeSeparationTimeWithOverlapChargedCorrectAmount() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations(){{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE);
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC) //1pm - 3pm
+                .withHourOfDay(13);
+        DateTime exitTime = entryTime.
+                withHourOfDay(15);
         testEventLog.add(new EntryEvent(testVehicle, entryTime));
         testEventLog.add(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
