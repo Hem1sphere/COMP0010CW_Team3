@@ -24,7 +24,7 @@ public abstract class ZoneBoundaryCrossing {
         return vehicle;
     }
 
-    public DateTime timestamp() {
+    DateTime timestamp() {
         return currentTime;
     }
 }

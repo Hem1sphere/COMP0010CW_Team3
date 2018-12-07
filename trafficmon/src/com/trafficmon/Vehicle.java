@@ -8,7 +8,7 @@ public class Vehicle {
         this.registration = registration;
     }
 
-    public static Vehicle withRegistration(String registration) {
+    static Vehicle withRegistration(String registration) {
         return new Vehicle(registration);
     }
 

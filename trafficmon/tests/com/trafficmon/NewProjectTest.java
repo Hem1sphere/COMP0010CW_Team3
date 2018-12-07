@@ -8,22 +8,20 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.trafficmon.CongestionChargeSystemBuilder.aCongestionChargeSystem;
 
 public class NewProjectTest {
 
-    public static final BigDecimal MINIMUM_CHARGE = RevisedChargeMethod.MINIMUM_CHARGE;
-    public static final BigDecimal MEDIUM_CHARGE = RevisedChargeMethod.MEDIUM_CHARGE;
-    public static final BigDecimal MAXIMUM_CHARGE = RevisedChargeMethod.MAXIMUM_CHARGE;
+    private static final BigDecimal MINIMUM_CHARGE = RevisedChargeMethod.MINIMUM_CHARGE;
+    private static final BigDecimal MEDIUM_CHARGE = RevisedChargeMethod.MEDIUM_CHARGE;
+    private static final BigDecimal MAXIMUM_CHARGE = RevisedChargeMethod.MAXIMUM_CHARGE;
 
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
-    AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
+    private PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
+    private AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, BigDecimal.valueOf(10));
     private final EventLog testEventLog = new StandardEventLog();

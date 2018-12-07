@@ -13,16 +13,14 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class LegacyProjectTest {
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
-    AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
+    private PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
+    private AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
 
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, new BigDecimal(10));

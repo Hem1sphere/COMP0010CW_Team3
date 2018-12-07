@@ -7,7 +7,7 @@ public class AccountsServiceProviderAdapter implements AccountsServiceProvider {
 
     private final AccountsService accountsService;
 
-    public AccountsServiceProviderAdapter(AccountsService accountsService) {
+    AccountsServiceProviderAdapter(AccountsService accountsService) {
         this.accountsService = accountsService;
     }
 

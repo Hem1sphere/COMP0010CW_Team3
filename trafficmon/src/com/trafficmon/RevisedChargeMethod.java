@@ -6,12 +6,12 @@ import java.util.List;
 
 public class RevisedChargeMethod implements ChargeMethod {
 
-    public static final int CHARGE_SEPARATION_TIME = 14;
-    public static final int LONGEST_MINUTE_SPENT_IN_ZONE = 240;
-    public static final int LONGEST_OUT_OF_ZONE_MINUTE = 240;
-    public static final BigDecimal MINIMUM_CHARGE = BigDecimal.valueOf(4);
-    public static final BigDecimal MEDIUM_CHARGE = BigDecimal.valueOf(6);
-    public static final BigDecimal MAXIMUM_CHARGE = BigDecimal.valueOf(12);
+    private static final int CHARGE_SEPARATION_TIME = 14;
+    private static final int LONGEST_MINUTE_SPENT_IN_ZONE = 240;
+    private static final int LONGEST_MINUTE_OUT_OF_ZONE = 240;
+    static final BigDecimal MINIMUM_CHARGE = BigDecimal.valueOf(4);
+    static final BigDecimal MEDIUM_CHARGE = BigDecimal.valueOf(6);
+    static final BigDecimal MAXIMUM_CHARGE = BigDecimal.valueOf(12);
 
 
     public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings) {
@@ -53,7 +53,7 @@ public class RevisedChargeMethod implements ChargeMethod {
         ZoneBoundaryCrossing lastEvent = periodCrossings.get(0);
         int currentIndex = 1;
         for(ZoneBoundaryCrossing crossing: periodCrossings.subList(1, periodCrossings.size())){
-            if(crossing instanceof EntryEvent && TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()) > LONGEST_OUT_OF_ZONE_MINUTE){
+            if(crossing instanceof EntryEvent && TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()) > LONGEST_MINUTE_OUT_OF_ZONE){
                 periodCharge = periodCharge.add(chargeForThisPeriod(periodCrossings.subList(currentIndex, periodCrossings.size())));
             }
             else currentIndex++;

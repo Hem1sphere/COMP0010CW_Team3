@@ -9,7 +9,7 @@ public class StandardEventLog implements EventLog {
 
     private List<ZoneBoundaryCrossing> eventLog;
 
-    public StandardEventLog() {
+    StandardEventLog() {
         this.eventLog = new ArrayList<ZoneBoundaryCrossing>();
     }
 

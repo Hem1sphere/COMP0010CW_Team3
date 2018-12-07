@@ -1,9 +1,6 @@
 package com.trafficmon;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CongestionChargeSystemBuilder {
+class CongestionChargeSystemBuilder {
     private PenaltiesService operationsTeam = OperationsTeam.getInstance();
     private EventLog eventLog = new StandardEventLog();
     private AccountsServiceProvider accountsServiceProvider = new AccountsServiceProviderAdapter(RegisteredCustomerAccountsService.getInstance());
@@ -11,31 +8,31 @@ public class CongestionChargeSystemBuilder {
 
     private CongestionChargeSystemBuilder() {};
 
-    public static CongestionChargeSystemBuilder aCongestionChargeSystem() {
+    static CongestionChargeSystemBuilder aCongestionChargeSystem() {
         return new CongestionChargeSystemBuilder();
     }
 
-    public CongestionChargeSystemBuilder withChargeSystem(ChargeMethod chargeMethod){
+    CongestionChargeSystemBuilder withChargeSystem(ChargeMethod chargeMethod){
         this.chargeMethod = chargeMethod;
         return this;
     }
 
-    public CongestionChargeSystemBuilder withOperationsTeam(PenaltiesService operationsTeam) {
+    CongestionChargeSystemBuilder withOperationsTeam(PenaltiesService operationsTeam) {
         this.operationsTeam = operationsTeam;
         return this;
     }
 
-    public CongestionChargeSystemBuilder withEventLog(EventLog eventLog) {
+    CongestionChargeSystemBuilder withEventLog(EventLog eventLog) {
         this.eventLog = eventLog;
         return this;
     }
 
-    public CongestionChargeSystemBuilder withAccountsServiceProvider(AccountsServiceProvider accountsServiceProvider) {
+    CongestionChargeSystemBuilder withAccountsServiceProvider(AccountsServiceProvider accountsServiceProvider) {
         this.accountsServiceProvider = accountsServiceProvider;
         return this;
     }
 
-    public CongestionChargeSystem build() {
+    CongestionChargeSystem build() {
         return new CongestionChargeSystem(chargeMethod, operationsTeam, eventLog, accountsServiceProvider);
     }
 }

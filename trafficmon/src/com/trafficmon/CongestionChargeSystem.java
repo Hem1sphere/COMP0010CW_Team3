@@ -3,17 +3,17 @@ package com.trafficmon;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class CongestionChargeSystem {
+class CongestionChargeSystem {
 
-    public static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = BigDecimal.valueOf(0.05);
+    static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = BigDecimal.valueOf(0.05);
 
     //an event log that records all boundary crossing events
-    private final EventLog eventLog; //extract as interface????
+    private final EventLog eventLog;
     private final PenaltiesService operationsTeam;
     private final AccountsServiceProvider accountsServiceProvider;
     private final ChargeMethod chargeMethod;
 
-    public CongestionChargeSystem(ChargeMethod chargeMethod, PenaltiesService operationsTeam, EventLog eventLog, AccountsServiceProvider accountsServiceProvider) {
+    CongestionChargeSystem(ChargeMethod chargeMethod, PenaltiesService operationsTeam, EventLog eventLog, AccountsServiceProvider accountsServiceProvider) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
         this.accountsServiceProvider = accountsServiceProvider;
@@ -21,11 +21,11 @@ public class CongestionChargeSystem {
     }
 
 
-    public void vehicleEnteringZone(Vehicle vehicle) {
+    void vehicleEnteringZone(Vehicle vehicle) {
         eventLog.logEntry(vehicle);
     }
 
-    public void vehicleLeavingZone(Vehicle vehicle) {
+    void vehicleLeavingZone(Vehicle vehicle) {
         if (!eventLog.vehicleIsRegistered(vehicle)) {
             return;
         }
@@ -33,7 +33,7 @@ public class CongestionChargeSystem {
     }
 
 
-    public void calculateCharges() {
+    void calculateCharges() {
         for (Map.Entry<Vehicle, List<ZoneBoundaryCrossing>> vehicleCrossings : eventLog.getCrossingsByVehicle().entrySet()) {
             Vehicle vehicle = vehicleCrossings.getKey();
             List<ZoneBoundaryCrossing> crossings = vehicleCrossings.getValue();
