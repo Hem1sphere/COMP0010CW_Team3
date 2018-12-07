@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CongestionChargeSystemBuilder {
     private PenaltiesService operationsTeam = OperationsTeam.getInstance();
-    private List<ZoneBoundaryCrossing> eventLog = new ArrayList<ZoneBoundaryCrossing>();
+    private EventLog eventLog = new StandardEventLog();
     private AccountsServiceProvider accountsServiceProvider = new AccountsServiceProviderAdapter(RegisteredCustomerAccountsService.getInstance());
     private ChargeMethod chargeMethod;
 
@@ -25,7 +25,7 @@ public class CongestionChargeSystemBuilder {
         return this;
     }
 
-    public CongestionChargeSystemBuilder withEventLog(List<ZoneBoundaryCrossing> eventLog) {
+    public CongestionChargeSystemBuilder withEventLog(EventLog eventLog) {
         this.eventLog = eventLog;
         return this;
     }

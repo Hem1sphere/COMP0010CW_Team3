@@ -26,7 +26,7 @@ public class NewProjectTest {
     AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, BigDecimal.valueOf(10));
-    private final List<ZoneBoundaryCrossing> testEventLog = new ArrayList<ZoneBoundaryCrossing>();
+    private final EventLog testEventLog = new StandardEventLog();
     private ChargeMethod revisedChargeMethod = new RevisedChargeMethod();
 
 
@@ -42,8 +42,8 @@ public class NewProjectTest {
         DateTime exitTime = entryTime.
                 withHourOfDay(10)
                 .withMinuteOfHour(31); //4 hour and 1 minute, should charge max
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -66,10 +66,10 @@ public class NewProjectTest {
         DateTime exitTime2 = entryTime.
                 withHourOfDay(21)
                 .withMinuteOfHour(30); //second period of 2.5hours
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        testEventLog.add(new EntryEvent(testVehicle, entryTime2));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime2));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime2));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime2));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -86,8 +86,8 @@ public class NewProjectTest {
                 .withHourOfDay(8);
         DateTime exitTime = entryTime.
                 withHourOfDay(11);
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -102,8 +102,8 @@ public class NewProjectTest {
                 .withHourOfDay(13);
         DateTime exitTime = entryTime.
                 withHourOfDay(15);
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -118,8 +118,8 @@ public class NewProjectTest {
                 .withHourOfDay(15);
         DateTime exitTime = entryTime.
                 withHourOfDay(18);
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -142,10 +142,10 @@ public class NewProjectTest {
         DateTime exitTime2 = entryTime.
                 withHourOfDay(20)
                 .withMinuteOfHour(30); //enter after 2pm for 1.5hours, total < 4hours
-        testEventLog.add(new EntryEvent(testVehicle, entryTime));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime));
-        testEventLog.add(new EntryEvent(testVehicle, entryTime2));
-        testEventLog.add(new ExitEvent(testVehicle, exitTime2));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime2));
+        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime2));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }
