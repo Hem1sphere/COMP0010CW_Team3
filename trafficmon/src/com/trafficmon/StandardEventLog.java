@@ -19,10 +19,10 @@ public class StandardEventLog implements EventLog {
             if (crossing.timestamp().isBefore( lastEvent.timestamp())) {
                 return false;
             }
-            if (crossing.getType() == "entry" && lastEvent.getType() == "entry") {
+            if (crossing.getType().equals("entry") && lastEvent.getType().equals("entry")) {
                 return false;
             }
-            if (crossing.getType() == "exit" && lastEvent.getType() == "exit") {
+            if (crossing.getType().equals("exit") && lastEvent.getType().equals("exit")) {
                 return false;
             }
             lastEvent = crossing;
