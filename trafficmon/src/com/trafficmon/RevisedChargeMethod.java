@@ -38,7 +38,6 @@ public class RevisedChargeMethod implements ChargeMethod {
         //If the driver should be charged an ADDITIONAL 12 pounds, simply delete else and do charge += chargeForThisPeriod(croossings);
         else{
             charge = chargeForThisPeriod(crossings);
-            //charge = chargeForThisPeriodWK(crossings);
         }
         if(charge.compareTo(MAXIMUM_CHARGE) > 0){
             charge = MAXIMUM_CHARGE;
@@ -64,17 +63,5 @@ public class RevisedChargeMethod implements ChargeMethod {
         }
         return periodCharge;
     }
-
-    private BigDecimal chargeForThisPeriodWK(List<ZoneBoundaryCrossing> periodCrossings){
-        ZoneBoundaryCrossing firstEntry = periodCrossings.get(0);
-        DateTime firstEntryTime = firstEntry.timestamp();
-        if(firstEntryTime.getHourOfDay() >= CHARGE_SEPARATION_TIME){
-             return MINIMUM_CHARGE;
-        }
-        else {
-            return MEDIUM_CHARGE;
-        }
-    }
-
 
 }
