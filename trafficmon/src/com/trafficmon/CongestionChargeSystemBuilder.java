@@ -4,7 +4,7 @@ class CongestionChargeSystemBuilder {
     private PenaltiesService operationsTeam = OperationsTeam.getInstance();
     private EventLog eventLog = new EventLog();
     private AccountsServiceProvider accountsServiceProvider = new AccountsServiceProviderAdapter(RegisteredCustomerAccountsService.getInstance());
-    private ChargeMethod chargeMethod;
+    private ChargeMethod chargeMethod = new RevisedChargeMethod();
 
     private CongestionChargeSystemBuilder() {};
 
