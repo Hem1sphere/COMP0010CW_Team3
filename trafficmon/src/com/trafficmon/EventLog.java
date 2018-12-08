@@ -14,9 +14,9 @@ public interface EventLog {
 
     void logExit(Vehicle vehicle);
 
-    void logEntryEvent(EntryEvent entryEvent);
+    void logEntryEvent(Event event);
 
-    void logExitEvent(ExitEvent exitEvent);
+    void logExitEvent(Event event);
 
     int getNumberOfEvents();
 }

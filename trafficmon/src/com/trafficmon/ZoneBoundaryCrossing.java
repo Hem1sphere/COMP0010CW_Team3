@@ -8,4 +8,5 @@ import javax.print.attribute.standard.DateTimeAtCompleted;
 public interface ZoneBoundaryCrossing {
     Vehicle getVehicle();
     DateTime timestamp();
+    String getType();
 }

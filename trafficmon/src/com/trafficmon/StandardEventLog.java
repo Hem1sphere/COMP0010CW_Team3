@@ -19,10 +19,10 @@ public class StandardEventLog implements EventLog {
             if (crossing.timestamp().isBefore( lastEvent.timestamp())) {
                 return false;
             }
-            if (crossing instanceof EntryEvent && lastEvent instanceof EntryEvent) {
+            if (crossing.getType() == "entry" && lastEvent.getType() == "entry") {
                 return false;
             }
-            if (crossing instanceof ExitEvent && lastEvent instanceof ExitEvent) {
+            if (crossing.getType() == "exit" && lastEvent.getType() == "exit") {
                 return false;
             }
             lastEvent = crossing;
@@ -51,19 +51,19 @@ public class StandardEventLog implements EventLog {
     }
 
     public void logEntry(Vehicle vehicle) {
-        eventLog.add(new EntryEvent(vehicle));
+        eventLog.add(new Event(vehicle, "entry"));
     }
 
     public void logExit(Vehicle vehicle) {
-        eventLog.add(new ExitEvent(vehicle));
+        eventLog.add(new Event(vehicle, "exit"));
     }
 
-    public void logEntryEvent(EntryEvent entryEvent) {
-        eventLog.add(entryEvent);
+    public void logEntryEvent(Event event) {
+        eventLog.add(event);
     }
 
-    public void logExitEvent(ExitEvent exitEvent) {
-        eventLog.add(exitEvent);
+    public void logExitEvent(Event event) {
+        eventLog.add(event);
     }
 
     public int getNumberOfEvents() {
