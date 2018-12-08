@@ -151,7 +151,7 @@ public class NewProjectTest {
     @Test
     public void multipleEntryAndExits() throws AccountNotRegisteredException, InsufficientCreditException {
         context.checking(new Expectations() {{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE.add(MEDIUM_CHARGE).add(MEDIUM_CHARGE));
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MAXIMUM_CHARGE);
         }});
 
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
