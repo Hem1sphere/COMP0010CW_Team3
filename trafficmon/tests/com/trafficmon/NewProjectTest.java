@@ -148,4 +148,38 @@ public class NewProjectTest {
         congestionChargeSystem.calculateCharges();
     }
 
+    @Test
+    public void multipleEntryAndExits() throws AccountNotRegisteredException, InsufficientCreditException {
+        context.checking(new Expectations() {{
+            exactly(1).of(accountsServiceProvider).billVehicleAccount(testVehicle, MEDIUM_CHARGE.add(MINIMUM_CHARGE));
+        }});
+
+        DateTime entryTime = new DateTime(DateTimeZone.UTC)
+                .withHourOfDay(5)
+                .withMinuteOfHour(00);
+        DateTime exitTime = entryTime.
+                withHourOfDay(5)
+                .withMinuteOfHour(01);
+        DateTime entryTime2 = entryTime.
+                withHourOfDay(9)
+                .withMinuteOfHour(30);
+        DateTime exitTime2 = entryTime.
+                withHourOfDay(9)
+                .withMinuteOfHour(31);
+        DateTime entryTime3 = entryTime.
+                withHourOfDay(13)
+                .withMinuteOfHour(45);
+        DateTime exitTime3 = entryTime.
+                withHourOfDay(13)
+                .withMinuteOfHour(46); //enter after 2pm for 1.5hours, total < 4hours
+        testEventLog.logEvent(new Event(testVehicle, "entry", entryTime));
+        testEventLog.logEvent(new Event(testVehicle, "exit", exitTime));
+        testEventLog.logEvent(new Event(testVehicle, "entry", entryTime2));
+        testEventLog.logEvent(new Event(testVehicle, "exit", exitTime2));
+        testEventLog.logEvent(new Event(testVehicle, "entry", entryTime3));
+        testEventLog.logEvent(new Event(testVehicle, "exit", exitTime3));
+        CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
+        congestionChargeSystem.calculateCharges();
+    }
+
 }

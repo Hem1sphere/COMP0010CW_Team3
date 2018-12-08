@@ -1,6 +1,6 @@
 package com.trafficmon;
 
-        import org.jmock.Expectations;
+import org.jmock.Expectations;
         import org.jmock.integration.junit4.JUnitRuleMockery;
         import org.joda.time.DateTimeUtils;
         import org.junit.Rule;
@@ -30,7 +30,7 @@ public class SystemTest {
         }});
 
         ChargeMethod chargeMethod = new RevisedChargeMethod();
-        CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().withChargeSystem(chargeMethod).withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().withAccountsServiceProvider(accountsServiceProvider).build();
 
         //05:34:03, "A123 XYZ" Entering
         DateTimeUtils.setCurrentMillisFixed(1544247243000L);
