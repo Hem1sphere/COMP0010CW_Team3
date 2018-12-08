@@ -24,7 +24,7 @@ public class RevisedChargeMethod implements ChargeMethod {
         //check if the total time spent in zone is longer than 4hours. If so, charge will be $12.
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
 
-            if (crossing instanceof ExitEvent) {
+            if (crossing.getType().equals("exit")) {
                 minutesTimeSpentInZone += (TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()));
             }
 
@@ -53,7 +53,7 @@ public class RevisedChargeMethod implements ChargeMethod {
         ZoneBoundaryCrossing lastEvent = periodCrossings.get(0);
         int currentIndex = 1;
         for(ZoneBoundaryCrossing crossing: periodCrossings.subList(1, periodCrossings.size())){
-            if(crossing instanceof EntryEvent && TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()) > LONGEST_MINUTE_OUT_OF_ZONE){
+            if(crossing.getType().equals("entry") && TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()) > LONGEST_MINUTE_OUT_OF_ZONE){
                 periodCharge = periodCharge.add(chargeForThisPeriod(periodCrossings.subList(currentIndex, periodCrossings.size())));
             }
             else currentIndex++;

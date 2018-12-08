@@ -24,7 +24,7 @@ public class LegacyProjectTest {
 
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, new BigDecimal(10));
-    private final EventLog testEventLog = new EventLog();
+    private final EventLog testEventLog = new StandardEventLog();
     private ChargeMethod legacyChargeMethod = new LegacyChargeMethod();
 
 
@@ -66,8 +66,8 @@ public class LegacyProjectTest {
         DateTime exitTime = entryTime.withHourOfDay(17)
                 .withMinuteOfHour(30)
                 .withSecondOfMinute(59);
-        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
-        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEvent(new Event(testVehicle,"entry", entryTime));
+        testEventLog.logEvent(new Event(testVehicle,"exit", exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
 
@@ -84,8 +84,8 @@ public class LegacyProjectTest {
         DateTime exitTime2 = entryTime.withHourOfDay(22)
                 .withMinuteOfHour(30)
                 .withSecondOfMinute(59);
-        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime2));
-        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime2));
+        testEventLog.logEvent(new Event(testVehicle,"entry", entryTime2));
+        testEventLog.logEvent(new Event(testVehicle,"exit", exitTime2));
         CongestionChargeSystem congestionChargeSystem2 = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem2.calculateCharges();
     }
@@ -101,8 +101,8 @@ public class LegacyProjectTest {
                 .withMinuteOfHour(30);
         DateTime exitTime = entryTime.withHourOfDay(17)
                 .withMinuteOfHour(30);
-        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
-        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEvent(new Event(testVehicle,"entry", entryTime));
+        testEventLog.logEvent(new Event(testVehicle,"exit", exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withEventLog(testEventLog).withOperationsTeam(operationsTeam).build();
         congestionChargeSystem.calculateCharges();
     }
@@ -120,8 +120,8 @@ public class LegacyProjectTest {
                 .withMinuteOfHour(30);
         DateTime exitTime = entryTime.withHourOfDay(17)
                 .withMinuteOfHour(30);
-        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
-        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEvent(new Event(testVehicle,"entry", entryTime));
+        testEventLog.logEvent(new Event(testVehicle,"exit", exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(new AccountsServiceProvider() {
 
             public void billVehicleAccount(Vehicle vehicle, BigDecimal charge) throws InsufficientCreditException {
@@ -141,8 +141,8 @@ public class LegacyProjectTest {
         DateTime entryTime = new DateTime(DateTimeZone.UTC)
                 .withHourOfDay(18);
         DateTime exitTime = entryTime.withHourOfDay(17);
-        testEventLog.logEntryEvent(new EntryEvent(testVehicle, entryTime));
-        testEventLog.logExitEvent(new ExitEvent(testVehicle, exitTime));
+        testEventLog.logEvent(new Event(testVehicle,"entry", entryTime));
+        testEventLog.logEvent(new Event(testVehicle,"exit", exitTime));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(legacyChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).build();
         congestionChargeSystem.calculateCharges();
     }
