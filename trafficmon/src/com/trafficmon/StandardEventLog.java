@@ -58,11 +58,7 @@ public class StandardEventLog implements EventLog {
         eventLog.add(new Event(vehicle, "exit"));
     }
 
-    public void logEntryEvent(Event event) {
-        eventLog.add(event);
-    }
-
-    public void logExitEvent(Event event) {
+    public void logEvent(Event event) {
         eventLog.add(event);
     }
 
