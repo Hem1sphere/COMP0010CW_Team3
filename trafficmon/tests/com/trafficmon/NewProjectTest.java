@@ -160,6 +160,12 @@ public class NewProjectTest {
         DateTime exitTime = entryTime.
                 withHourOfDay(5)
                 .withMinuteOfHour(01);
+        DateTime entryTime1_5 = entryTime.
+                withHourOfDay(5)
+                .withMinuteOfHour(02);
+        DateTime exitTime1_5 = entryTime.
+                withHourOfDay(5)
+                .withMinuteOfHour(03);
         DateTime entryTime2 = entryTime.
                 withHourOfDay(9)
                 .withMinuteOfHour(30);
@@ -171,13 +177,24 @@ public class NewProjectTest {
                 .withMinuteOfHour(45);
         DateTime exitTime3 = entryTime.
                 withHourOfDay(13)
-                .withMinuteOfHour(46); //enter after 2pm for 1.5hours, total < 4hours
+                .withMinuteOfHour(46);
+        DateTime entryTime3_5 = entryTime.
+                withHourOfDay(13)
+                .withMinuteOfHour(47);
+        DateTime exitTime3_5 = entryTime.
+                withHourOfDay(13)
+                .withMinuteOfHour(48);
+        //enter after 2pm for 1.5hours, total < 4hours
         testEventLog.logEvent(new Event(testVehicle, "entry", entryTime));
         testEventLog.logEvent(new Event(testVehicle, "exit", exitTime));
+        testEventLog.logEvent(new Event(testVehicle, "entry", entryTime1_5));
+        testEventLog.logEvent(new Event(testVehicle, "exit", exitTime1_5));
         testEventLog.logEvent(new Event(testVehicle, "entry", entryTime2));
         testEventLog.logEvent(new Event(testVehicle, "exit", exitTime2));
         testEventLog.logEvent(new Event(testVehicle, "entry", entryTime3));
         testEventLog.logEvent(new Event(testVehicle, "exit", exitTime3));
+        testEventLog.logEvent(new Event(testVehicle, "entry", entryTime3_5));
+        testEventLog.logEvent(new Event(testVehicle, "exit", exitTime3_5));
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().withChargeSystem(revisedChargeMethod).withOperationsTeam(operationsTeam).withEventLog(testEventLog).withAccountsServiceProvider(accountsServiceProvider).build();
         congestionChargeSystem.calculateCharges();
     }

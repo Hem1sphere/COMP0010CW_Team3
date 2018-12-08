@@ -55,8 +55,9 @@ public class RevisedChargeMethod implements ChargeMethod {
         for(ZoneBoundaryCrossing crossing: periodCrossings.subList(1, periodCrossings.size())){
             if(crossing.getType().equals("entry") && TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()) > LONGEST_MINUTE_OUT_OF_ZONE){
                 periodCharge = periodCharge.add(chargeForThisPeriod(periodCrossings.subList(currentIndex, periodCrossings.size())));
+                return periodCharge;
             }
-            else currentIndex++;
+            currentIndex++;
         }
         return periodCharge;
     }
