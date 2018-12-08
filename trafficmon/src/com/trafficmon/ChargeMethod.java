@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ChargeMethod {
-    public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings);
+    BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings);
 }

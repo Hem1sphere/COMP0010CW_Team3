@@ -8,7 +8,7 @@ class CongestionChargeSystemBuilder {
 
     private CongestionChargeSystemBuilder() {};
 
-    static CongestionChargeSystemBuilder aCongestionChargeSystem() {
+    public static CongestionChargeSystemBuilder aCongestionChargeSystem() {
         return new CongestionChargeSystemBuilder();
     }
 

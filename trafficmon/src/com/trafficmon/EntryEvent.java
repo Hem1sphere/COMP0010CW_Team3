@@ -2,7 +2,7 @@ package com.trafficmon;
 
 import org.joda.time.DateTime;
 
-class EntryEvent extends ZoneBoundaryCrossing {
+class EntryEvent extends Event {
     EntryEvent(Vehicle vehicleRegistration) {
         super(vehicleRegistration);
     }
