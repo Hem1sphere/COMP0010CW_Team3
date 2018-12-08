@@ -24,7 +24,7 @@ public class LegacyProjectTest {
 
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, new BigDecimal(10));
-    private final EventLog testEventLog = new StandardEventLog();
+    private final EventLog testEventLog = new EventLog();
     private ChargeMethod legacyChargeMethod = new LegacyChargeMethod();
 
 

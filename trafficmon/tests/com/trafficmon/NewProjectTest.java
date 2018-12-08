@@ -24,7 +24,7 @@ public class NewProjectTest {
     private AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
     private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, BigDecimal.valueOf(10));
-    private final EventLog testEventLog = new StandardEventLog();
+    private final EventLog testEventLog = new EventLog();
     private ChargeMethod revisedChargeMethod = new RevisedChargeMethod();
 
 

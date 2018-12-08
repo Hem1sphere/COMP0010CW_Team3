@@ -2,7 +2,7 @@ package com.trafficmon;
 
 class CongestionChargeSystemBuilder {
     private PenaltiesService operationsTeam = OperationsTeam.getInstance();
-    private EventLog eventLog = new StandardEventLog();
+    private EventLog eventLog = new EventLog();
     private AccountsServiceProvider accountsServiceProvider = new AccountsServiceProviderAdapter(RegisteredCustomerAccountsService.getInstance());
     private ChargeMethod chargeMethod;
 
