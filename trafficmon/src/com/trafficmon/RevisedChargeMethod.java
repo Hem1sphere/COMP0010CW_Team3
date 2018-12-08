@@ -40,6 +40,9 @@ public class RevisedChargeMethod implements ChargeMethod {
             charge = chargeForThisPeriod(crossings);
             //charge = chargeForThisPeriodWK(crossings);
         }
+        if(charge.compareTo(MAXIMUM_CHARGE) > 0){
+            charge = MAXIMUM_CHARGE;
+        }
         return charge;
     }
 
