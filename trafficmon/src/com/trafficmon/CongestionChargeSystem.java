@@ -13,7 +13,7 @@ class CongestionChargeSystem {
     private final AccountsServiceProvider accountsServiceProvider;
     private final ChargeMethod chargeMethod;
 
-    CongestionChargeSystem(ChargeMethod chargeMethod, PenaltiesService operationsTeam, EventLog eventLog, AccountsServiceProvider accountsServiceProvider) {
+    public CongestionChargeSystem(ChargeMethod chargeMethod, PenaltiesService operationsTeam, EventLog eventLog, AccountsServiceProvider accountsServiceProvider) {
         this.operationsTeam = operationsTeam;
         this.eventLog = eventLog;
         this.accountsServiceProvider = accountsServiceProvider;
@@ -21,11 +21,11 @@ class CongestionChargeSystem {
     }
 
 
-    void vehicleEnteringZone(Vehicle vehicle) {
+    public void vehicleEnteringZone(Vehicle vehicle) {
         eventLog.logEntry(vehicle);
     }
 
-    void vehicleLeavingZone(Vehicle vehicle) {
+    public void vehicleLeavingZone(Vehicle vehicle) {
         if (!eventLog.vehicleIsRegistered(vehicle)) {
             return;
         }
@@ -33,7 +33,7 @@ class CongestionChargeSystem {
     }
 
 
-    void calculateCharges() {
+    public void calculateCharges() {
         for (Map.Entry<Vehicle, List<ZoneBoundaryCrossing>> vehicleCrossings : eventLog.getCrossingsByVehicle().entrySet()) {
             Vehicle vehicle = vehicleCrossings.getKey();
             List<ZoneBoundaryCrossing> crossings = vehicleCrossings.getValue();
