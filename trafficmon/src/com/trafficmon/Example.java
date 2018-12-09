@@ -7,13 +7,16 @@ public class Example {
     public static void main(String[] args) throws Exception {
         CongestionChargeSystem congestionChargeSystem = aCongestionChargeSystem().build();
         congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("A123 XYZ"));
-//        delaySeconds(10);
+        delaySeconds(10);
         congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));
 //        congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("J091 4PY"));
 //        delayMinutes(30);
 //        congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));
 //        delayMinutes(10);
 //        congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("J091 4PY"));
+        congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("A123 XYZ"));
+        congestionChargeSystem.vehicleLeavingZone(Vehicle.withRegistration("A123 XYZ"));
+
         congestionChargeSystem.calculateCharges();
     }
     private static void delayMinutes(int mins) throws InterruptedException {

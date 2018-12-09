@@ -21,25 +21,22 @@ public class RevisedChargeMethod implements ChargeMethod {
         int minutesTimeSpentInZone = 0;
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
-        //check if the total time spent in zone is longer than 4hours. If so, charge will be $12.
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
-
             if (crossing.getType().equals("exit")) {
                 minutesTimeSpentInZone += (TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()));
             }
 
             lastEvent = crossing;
-
         }
+        //check if the total time spent in zone is longer than 4hours. If so, charge will be $12.
         if (minutesTimeSpentInZone > LONGEST_MINUTE_SPENT_IN_ZONE) {
             charge = MAXIMUM_CHARGE;
         }
-        //else, check if the vehicle should be charged multiple times.
-        //If the driver should be charged an ADDITIONAL 12 pounds, simply delete else and do charge += chargeForThisPeriod(croossings);
+        //else calculate charge based on period
         else{
             charge = chargeForThisPeriod(crossings);
         }
-        if(charge.compareTo(MAXIMUM_CHARGE) > 0){
+        if(charge.compareTo(MAXIMUM_CHARGE) > 0){ //cap the charge at 12 pounds
             charge = MAXIMUM_CHARGE;
         }
         return charge;
