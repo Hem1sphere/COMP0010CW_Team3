@@ -12,27 +12,27 @@ class CongestionChargeSystemBuilder {
         return new CongestionChargeSystemBuilder();
     }
 
-    CongestionChargeSystemBuilder withChargeSystem(ChargeMethod chargeMethod){
+    public CongestionChargeSystemBuilder withChargeSystem(ChargeMethod chargeMethod){
         this.chargeMethod = chargeMethod;
         return this;
     }
 
-    CongestionChargeSystemBuilder withOperationsTeam(PenaltiesService operationsTeam) {
+    public CongestionChargeSystemBuilder withOperationsTeam(PenaltiesService operationsTeam) {
         this.operationsTeam = operationsTeam;
         return this;
     }
 
-    CongestionChargeSystemBuilder withEventLog(EventLog eventLog) {
+    public CongestionChargeSystemBuilder withEventLog(EventLog eventLog) {
         this.eventLog = eventLog;
         return this;
     }
 
-    CongestionChargeSystemBuilder withAccountsServiceProvider(AccountsServiceProvider accountsServiceProvider) {
+    public CongestionChargeSystemBuilder withAccountsServiceProvider(AccountsServiceProvider accountsServiceProvider) {
         this.accountsServiceProvider = accountsServiceProvider;
         return this;
     }
 
-    CongestionChargeSystem build() {
+    public CongestionChargeSystem build() {
         return new CongestionChargeSystem(chargeMethod, operationsTeam, eventLog, accountsServiceProvider);
     }
 }
