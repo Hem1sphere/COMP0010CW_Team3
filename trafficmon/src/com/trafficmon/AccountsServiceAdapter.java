@@ -2,12 +2,12 @@ package com.trafficmon;
 
 import java.math.BigDecimal;
 
-public class AccountsServiceProviderAdapter implements AccountsServiceProvider {
+public class AccountsServiceAdapter implements AccountsServiceProvider {
 
 
     private final AccountsService accountsService;
 
-    public AccountsServiceProviderAdapter(AccountsService accountsService) {
+    public AccountsServiceAdapter(AccountsService accountsService) {
         this.accountsService = accountsService;
     }
 
