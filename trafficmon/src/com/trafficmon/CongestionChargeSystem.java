@@ -5,8 +5,6 @@ import java.util.*;
 
 class CongestionChargeSystem {
 
-    static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = BigDecimal.valueOf(0.05);
-
     //an event log that records all boundary crossing events
     private final EventLog eventLog;
     private final PenaltiesService operationsTeam;

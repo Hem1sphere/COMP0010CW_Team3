@@ -3,10 +3,11 @@ package com.trafficmon;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.trafficmon.CongestionChargeSystem.CHARGE_RATE_POUNDS_PER_MINUTE;
-
 //the old method of charging vehicles by minute
 public class LegacyChargeMethod implements ChargeMethod {
+
+    static final BigDecimal CHARGE_RATE_POUNDS_PER_MINUTE = BigDecimal.valueOf(0.05);
+
     public BigDecimal calculateChargeForVehicle(List<ZoneBoundaryCrossing> crossings) {
         BigDecimal charge = BigDecimal.valueOf(0);
 
