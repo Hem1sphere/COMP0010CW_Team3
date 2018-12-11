@@ -17,6 +17,13 @@ public class SystemTest {
 
         CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().build();
 
+
+        //We isolated and created a mock accounts service provider for the unit tests in LegacyProjectTest and NewProjectTest
+        //However, for the system tests, to test the whole system including the real 3rd party accounts service provider,
+        //we assume the following accounts are dummy accounts created by the external service purely for the sake of testing
+        //(i.e. accounts with money topped up and registered but not linked to any physical person)
+
+        
         //05:34:03, "A123 XYZ" Entering
         DateTimeUtils.setCurrentMillisFixed(1544247243000L);
         congestionChargeSystem.vehicleEnteringZone(Vehicle.withRegistration("A123 XYZ"));
