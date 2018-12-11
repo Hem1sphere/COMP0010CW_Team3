@@ -1,36 +1,22 @@
 package com.trafficmon;
 
-import org.jmock.Expectations;
-        import org.jmock.integration.junit4.JUnitRuleMockery;
-        import org.joda.time.DateTimeUtils;
-        import org.junit.Rule;
-        import org.junit.Test;
+import org.joda.time.DateTimeUtils;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-        import java.math.BigDecimal;
-
-        import static com.trafficmon.RevisedChargeMethod.MAXIMUM_CHARGE;
-        import static com.trafficmon.RevisedChargeMethod.MEDIUM_CHARGE;
-        import static com.trafficmon.RevisedChargeMethod.MINIMUM_CHARGE;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class SystemTest {
 
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-
-    private AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
-
     @Test
     public void SystemTest() throws AccountNotRegisteredException, InsufficientCreditException{
-        context.checking(new Expectations(){{
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("D243 5PR"), MEDIUM_CHARGE.add(MINIMUM_CHARGE));
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("B628 3XQ"), MINIMUM_CHARGE);
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("P283 2AD"), MEDIUM_CHARGE);
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("A123 XYZ"), MAXIMUM_CHARGE);
-            exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("H374 8VX"), MEDIUM_CHARGE);
-        }});
+
+        final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
 
         ChargeMethod chargeMethod = new RevisedChargeMethod();
-        CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().withAccountsServiceProvider(accountsServiceProvider).build();
+        CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().build();
 
         //05:34:03, "A123 XYZ" Entering
         DateTimeUtils.setCurrentMillisFixed(1544247243000L);
@@ -82,6 +68,10 @@ public class SystemTest {
 
 
         congestionChargeSystem.calculateCharges();
+
+        //ensures the system works end-to-end, including third party services, without any exceptions
+        assertTrue(outContent.toString().contains("Charge made to account of"));
+        assertTrue(outContent.toString().contains("deducted, balance:"));
     }
 
 }
