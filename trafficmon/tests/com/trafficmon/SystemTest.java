@@ -29,7 +29,6 @@ public class SystemTest {
             exactly(1).of(accountsServiceProvider).billVehicleAccount(Vehicle.withRegistration("H374 8VX"), MEDIUM_CHARGE);
         }});
 
-        ChargeMethod chargeMethod = new RevisedChargeMethod();
         CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().withAccountsServiceProvider(accountsServiceProvider).build();
 
         //05:34:03, "A123 XYZ" Entering
