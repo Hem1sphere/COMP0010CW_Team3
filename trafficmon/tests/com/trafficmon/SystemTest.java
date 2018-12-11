@@ -19,7 +19,7 @@ public class SystemTest {
         final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        AccountsServiceProvider accountsServiceProvider = new AccountsServiceAdapter(FakeRegisteredAccounts.getInstance());
+        AccountsServiceProvider accountsServiceProvider = new AccountsServiceAdapter(new FakeRegisteredAccounts());
 
         CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().withAccountsServiceProvider(accountsServiceProvider).build();
 
@@ -82,16 +82,8 @@ public class SystemTest {
 }
 
 class FakeRegisteredAccounts implements AccountsService{
-    private static final FakeRegisteredAccounts INSTANCE = new FakeRegisteredAccounts();
-    private BigDecimal randomCredit() {
-        return (new BigDecimal((int)(Math.random() * 100.0D) + 2)).setScale(2);
-    }
+    public FakeRegisteredAccounts(){
 
-    public static AccountsService getInstance() {
-        return INSTANCE;
-    }
-
-    private FakeRegisteredAccounts() {
     }
 
     public Account accountFor(Vehicle vehicle) throws AccountNotRegisteredException {
@@ -111,10 +103,10 @@ class FakeRegisteredAccounts implements AccountsService{
 
     private List<Account> accounts = new ArrayList<Account>() {
         {
-            this.add(new Account("Weikang Tan", Vehicle.withRegistration("K769 387"), FakeRegisteredAccounts.this.randomCredit()));
-            this.add(new Account("Jeff Ho", Vehicle.withRegistration("NZ87 6KX"), FakeRegisteredAccounts.this.randomCredit()));
-            this.add(new Account("Haixiang Sun", Vehicle.withRegistration("HE14 1MC"), FakeRegisteredAccounts.this.randomCredit()));
-            this.add(new Account("Yuxuan Fan", Vehicle.withRegistration("KK87 X65"), FakeRegisteredAccounts.this.randomCredit()));
+            this.add(new Account("Weikang Tan", Vehicle.withRegistration("K769 387"), BigDecimal.valueOf(50)));
+            this.add(new Account("Jeff Ho", Vehicle.withRegistration("NZ87 6KX"), BigDecimal.valueOf(10)));
+            this.add(new Account("Haixiang Sun", Vehicle.withRegistration("HE14 1MC"), BigDecimal.valueOf(1)));
+            this.add(new Account("Yuxuan Fan", Vehicle.withRegistration("KK87 X65"), BigDecimal.valueOf(5120)));
         }
     };
 }
