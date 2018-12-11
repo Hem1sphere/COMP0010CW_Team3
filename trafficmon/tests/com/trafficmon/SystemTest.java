@@ -15,7 +15,6 @@ public class SystemTest {
         final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        ChargeMethod chargeMethod = new RevisedChargeMethod();
         CongestionChargeSystem congestionChargeSystem = CongestionChargeSystemBuilder.aCongestionChargeSystem().build();
 
         //05:34:03, "A123 XYZ" Entering
