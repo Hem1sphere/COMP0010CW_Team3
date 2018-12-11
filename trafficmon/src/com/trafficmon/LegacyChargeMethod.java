@@ -14,7 +14,7 @@ public class LegacyChargeMethod implements ChargeMethod {
         ZoneBoundaryCrossing lastEvent = crossings.get(0);
 
         for (ZoneBoundaryCrossing crossing : crossings.subList(1, crossings.size())) {
-            if (crossing.getType() == "exit") {
+            if (crossing.getType().equals("exit")) {
                 charge = charge.add(
                         BigDecimal.valueOf(TimeManagement.minutesBetween(lastEvent.timestamp(), crossing.timestamp()))
                                 .multiply(CHARGE_RATE_POUNDS_PER_MINUTE));
