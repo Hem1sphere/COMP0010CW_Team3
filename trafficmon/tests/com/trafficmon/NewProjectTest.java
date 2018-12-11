@@ -23,6 +23,7 @@ public class NewProjectTest {
     private PenaltiesService operationsTeam = context.mock(PenaltiesService.class);
     private AccountsServiceProvider accountsServiceProvider = context.mock(AccountsServiceProvider.class);
     private final Vehicle testVehicle = Vehicle.withRegistration("TEST VEHICLE");
+    private final Account TEST_ACCOUNT = new Account("Test Owner", testVehicle, BigDecimal.valueOf(10));
     private final EventLog testEventLog = new StandardEventLog();
     private ChargeMethod revisedChargeMethod = new RevisedChargeMethod();
 
